@@ -1,0 +1,441 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "Travelora Travel. Share. Inspire." [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e10]:
+            - generic [ref=e11]: Travelora
+            - generic [ref=e12]: Travel. Share. Inspire.
+        - search [ref=e13]:
+          - textbox "Search destinations, journeys and people" [ref=e15]:
+            - /placeholder: Where do you want to go?
+        - generic [ref=e16]:
+          - link "Sign in" [ref=e17] [cursor=pointer]:
+            - /url: /login
+          - link "Join free" [ref=e18] [cursor=pointer]:
+            - /url: /signup
+    - generic [ref=e19]:
+      - complementary [ref=e20]:
+        - link "Join Travelora" [ref=e21] [cursor=pointer]:
+          - /url: /signup
+        - navigation "Main" [ref=e22]:
+          - link "Home" [ref=e23] [cursor=pointer]:
+            - /url: /
+          - link "Explore" [ref=e27] [cursor=pointer]:
+            - /url: /explore
+          - link "Map" [ref=e31] [cursor=pointer]:
+            - /url: /map
+          - link "Saved" [ref=e34] [cursor=pointer]:
+            - /url: /saved
+        - generic [ref=e37]:
+          - paragraph [ref=e38]: Coming in Phase 2
+          - list [ref=e39]:
+            - listitem "Not built yet — Phase 2" [ref=e40]: Trips
+            - listitem "Not built yet — Phase 2" [ref=e44]: Communities
+            - listitem "Not built yet — Phase 2" [ref=e50]: Messages
+            - listitem "Not built yet — Phase 2" [ref=e53]: Notifications
+      - main [ref=e57]:
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - heading "Travel. Share. Inspire." [level=1] [ref=e60]
+            - paragraph [ref=e61]: Real routes, real costs, real road conditions — from people who actually drove them.
+          - list [ref=e62]:
+            - listitem [ref=e63] [cursor=pointer]:
+              - generic [ref=e68]: Trending
+            - listitem [ref=e69] [cursor=pointer]:
+              - generic [ref=e74]: Mountains
+            - listitem [ref=e75] [cursor=pointer]:
+              - generic [ref=e82]: Adventure
+            - listitem [ref=e83] [cursor=pointer]:
+              - generic [ref=e89]: Budget
+            - listitem [ref=e90] [cursor=pointer]:
+              - generic [ref=e97]: Road trips
+            - listitem [ref=e98] [cursor=pointer]:
+              - generic [ref=e105]: Rivers
+            - listitem [ref=e106] [cursor=pointer]:
+              - generic [ref=e112]: Weekend
+            - listitem [ref=e113] [cursor=pointer]:
+              - generic [ref=e119]: All
+          - generic [ref=e120]:
+            - link "🔥 Trending Devprayag Gurgaon → Devprayag Gurgaon to Devprayag — the classic two-day run 320 km 7h 20m 2 days ₹3,250 Arjun Mehta Arjun Mehta 1h ago 2 121" [ref=e121] [cursor=pointer]:
+              - /url: /journeys/5028fb13-6fe4-4a6e-a25e-531bf736e73c
+              - generic [ref=e122]:
+                - generic [ref=e124]:
+                  - generic [ref=e125]: 🔥 Trending
+                  - generic [ref=e126]: Devprayag
+                - generic [ref=e127]:
+                  - paragraph [ref=e128]: Gurgaon → Devprayag
+                  - heading "Gurgaon to Devprayag — the classic two-day run" [level=2] [ref=e132]
+                  - generic [ref=e133]:
+                    - generic [ref=e134]: 320 km
+                    - generic [ref=e135]: 7h 20m
+                    - generic [ref=e136]: 2 days
+                    - generic [ref=e137]: ₹3,250
+                  - generic [ref=e138]:
+                    - img "Arjun Mehta" [ref=e139]
+                    - generic [ref=e140]:
+                      - paragraph [ref=e141]: Arjun Mehta
+                      - paragraph [ref=e142]: 1h ago
+                    - generic [ref=e143]:
+                      - generic [ref=e144]: "2"
+                      - generic [ref=e147]: "121"
+            - generic [ref=e151]:
+              - generic [ref=e152]:
+                - generic [ref=e153]:
+                  - heading "Popular journeys" [level=2] [ref=e154]
+                  - paragraph [ref=e155]: Most liked this week
+                - link "See all" [ref=e156] [cursor=pointer]:
+                  - /url: /explore
+              - generic [ref=e157]:
+                - link "Rishikesh to Chopta and the Chandrashila sunrise 3d ₹14,500 2" [ref=e158] [cursor=pointer]:
+                  - /url: /journeys/d830299f-95b8-46e4-a5fb-2c7ed4c68320
+                  - paragraph [ref=e162]: Rishikesh to Chopta and the Chandrashila sunrise
+                  - generic [ref=e163]:
+                    - generic [ref=e164]: 3d
+                    - generic [ref=e165]: ₹14,500
+                    - generic [ref=e166]: "2"
+                - link "A slow week in Mussoorie and Dhanaulti 8d ₹17,200 2" [ref=e169] [cursor=pointer]:
+                  - /url: /journeys/0b2fc83b-80ff-4fb6-adb9-8897bd417475
+                  - paragraph [ref=e173]: A slow week in Mussoorie and Dhanaulti
+                  - generic [ref=e174]:
+                    - generic [ref=e175]: 8d
+                    - generic [ref=e176]: ₹17,200
+                    - generic [ref=e177]: "2"
+                - link "Four days in Kanatal on a ₹6,000 budget 4d ₹5,650 1" [ref=e180] [cursor=pointer]:
+                  - /url: /journeys/f884f0c3-d29d-4f24-a4ab-828b6754cc61
+                  - paragraph [ref=e184]: Four days in Kanatal on a ₹6,000 budget
+                  - generic [ref=e185]:
+                    - generic [ref=e186]: 4d
+                    - generic [ref=e187]: ₹5,650
+                    - generic [ref=e188]: "1"
+                - link "Delhi to Auli in winter — snow, ropeway, and a lot of diesel 5d ₹32,560 1" [ref=e191] [cursor=pointer]:
+                  - /url: /journeys/be09724d-3d5c-41bf-9875-44502291ffbd
+                  - paragraph [ref=e195]: Delhi to Auli in winter — snow, ropeway, and a lot of diesel
+                  - generic [ref=e196]:
+                    - generic [ref=e197]: 5d
+                    - generic [ref=e198]: ₹32,560
+                    - generic [ref=e199]: "1"
+                - link "Tehri Lake overnight — the trip nobody books 2d ₹6,500 1" [ref=e202] [cursor=pointer]:
+                  - /url: /journeys/b973f23c-5019-472c-811c-b615015abd68
+                  - paragraph [ref=e206]: Tehri Lake overnight — the trip nobody books
+                  - generic [ref=e207]:
+                    - generic [ref=e208]: 2d
+                    - generic [ref=e209]: ₹6,500
+                    - generic [ref=e210]: "1"
+            - generic [ref=e213]:
+              - generic [ref=e214]:
+                - heading "Because you love mountains 🏔️" [level=2] [ref=e216]
+                - link "See all" [ref=e217] [cursor=pointer]:
+                  - /url: /explore
+              - generic [ref=e218]:
+                - link [ref=e219] [cursor=pointer]:
+                  - /url: /destinations/auli
+                  - generic [ref=e221]:
+                    - paragraph [ref=e222]: Auli
+                    - paragraph [ref=e223]: 1 journeys
+                - link [ref=e224] [cursor=pointer]:
+                  - /url: /destinations/chopta
+                  - generic [ref=e226]:
+                    - paragraph [ref=e227]: Chopta
+                    - paragraph [ref=e228]: 1 journeys
+                - link [ref=e229] [cursor=pointer]:
+                  - /url: /destinations/devprayag
+                  - generic [ref=e231]:
+                    - paragraph [ref=e232]: Devprayag
+                    - paragraph [ref=e233]: 1 journeys
+                - link [ref=e234] [cursor=pointer]:
+                  - /url: /destinations/kanatal
+                  - generic [ref=e236]:
+                    - paragraph [ref=e237]: Kanatal
+                    - paragraph [ref=e238]: 1 journeys
+                - link [ref=e239] [cursor=pointer]:
+                  - /url: /destinations/mussoorie
+                  - generic [ref=e241]:
+                    - paragraph [ref=e242]: Mussoorie
+                    - paragraph [ref=e243]: 1 journeys
+                - link [ref=e244] [cursor=pointer]:
+                  - /url: /destinations/tehri
+                  - generic [ref=e246]:
+                    - paragraph [ref=e247]: Tehri
+                    - paragraph [ref=e248]: 1 journeys
+                - link [ref=e249] [cursor=pointer]:
+                  - /url: /destinations/dehradun
+                  - generic [ref=e251]:
+                    - paragraph [ref=e252]: Dehradun
+                    - paragraph [ref=e253]: Uttarakhand
+                - link [ref=e254] [cursor=pointer]:
+                  - /url: /destinations/delhi
+                  - generic [ref=e256]:
+                    - paragraph [ref=e257]: Delhi
+                    - paragraph [ref=e258]: Delhi
+            - generic [ref=e259]:
+              - generic [ref=e261]:
+                - heading "Latest from the community" [level=2] [ref=e262]
+                - paragraph [ref=e263]: Fresh routes, straight from the road
+              - generic [ref=e264]:
+                - generic [ref=e265]:
+                  - link "budget 4 days ₹5,650 Dehradun → Kanatal Four days in Kanatal on a ₹6,000 budget" [ref=e266] [cursor=pointer]:
+                    - /url: /journeys/f884f0c3-d29d-4f24-a4ab-828b6754cc61
+                    - generic [ref=e267]:
+                      - generic [ref=e269]:
+                        - generic [ref=e270]: budget
+                        - generic [ref=e271]: 4 days
+                      - generic [ref=e272]: ₹5,650
+                      - generic [ref=e273]:
+                        - paragraph [ref=e274]:
+                          - generic [ref=e278]: Dehradun → Kanatal
+                        - heading "Four days in Kanatal on a ₹6,000 budget" [level=3] [ref=e279]
+                  - generic [ref=e280]:
+                    - generic [ref=e281]:
+                      - generic [ref=e282]: 78 km
+                      - generic [ref=e287]: 3h 30m
+                      - generic [ref=e288]: "167"
+                    - generic [ref=e292]:
+                      - link "Priya Sharma Priya Sharma 3d ago" [ref=e293] [cursor=pointer]:
+                        - /url: /profile/priya_travels
+                        - img "Priya Sharma" [ref=e294]
+                        - generic [ref=e295]:
+                          - generic [ref=e296]: Priya Sharma
+                          - generic [ref=e297]: 3d ago
+                      - generic [ref=e298]:
+                        - button "Like this journey" [ref=e299]:
+                          - generic [ref=e302]: "1"
+                        - link "1 comments" [ref=e303] [cursor=pointer]:
+                          - /url: /journeys/f884f0c3-d29d-4f24-a4ab-828b6754cc61#comments
+                          - generic [ref=e306]: "1"
+                        - button "Save this journey" [ref=e307]
+                - generic [ref=e310]:
+                  - link "adventure 3 days ₹14,500 Rishikesh → Chopta Rishikesh to Chopta and the Chandrashila sunrise" [ref=e311] [cursor=pointer]:
+                    - /url: /journeys/d830299f-95b8-46e4-a5fb-2c7ed4c68320
+                    - generic [ref=e312]:
+                      - generic [ref=e314]:
+                        - generic [ref=e315]: adventure
+                        - generic [ref=e316]: 3 days
+                      - generic [ref=e317]: ₹14,500
+                      - generic [ref=e318]:
+                        - paragraph [ref=e319]:
+                          - generic [ref=e323]: Rishikesh → Chopta
+                        - heading "Rishikesh to Chopta and the Chandrashila sunrise" [level=3] [ref=e324]
+                  - generic [ref=e325]:
+                    - generic [ref=e326]:
+                      - generic [ref=e327]: 208 km
+                      - generic [ref=e332]: 7h
+                      - generic [ref=e333]: "215"
+                    - generic [ref=e337]:
+                      - link "Dev Rawat Dev Rawat 6d ago" [ref=e338] [cursor=pointer]:
+                        - /url: /profile/dev_offroad
+                        - img "Dev Rawat" [ref=e339]
+                        - generic [ref=e340]:
+                          - generic [ref=e341]: Dev Rawat
+                          - generic [ref=e342]: 6d ago
+                      - generic [ref=e343]:
+                        - button "Like this journey" [ref=e344]:
+                          - generic [ref=e347]: "2"
+                        - link "0 comments" [ref=e348] [cursor=pointer]:
+                          - /url: /journeys/d830299f-95b8-46e4-a5fb-2c7ed4c68320#comments
+                          - generic [ref=e351]: "0"
+                        - button "Save this journey" [ref=e352]
+                - generic [ref=e355]:
+                  - link "road-trip 5 days ₹32,560 Delhi → Auli Delhi to Auli in winter — snow, ropeway, and a lot of diesel" [ref=e356] [cursor=pointer]:
+                    - /url: /journeys/be09724d-3d5c-41bf-9875-44502291ffbd
+                    - generic [ref=e357]:
+                      - generic [ref=e359]:
+                        - generic [ref=e360]: road-trip
+                        - generic [ref=e361]: 5 days
+                      - generic [ref=e362]: ₹32,560
+                      - generic [ref=e363]:
+                        - paragraph [ref=e364]:
+                          - generic [ref=e368]: Delhi → Auli
+                        - heading "Delhi to Auli in winter — snow, ropeway, and a lot of diesel" [level=3] [ref=e369]
+                  - generic [ref=e370]:
+                    - generic [ref=e371]:
+                      - generic [ref=e372]: 505 km
+                      - generic [ref=e377]: 13h
+                      - generic [ref=e378]: "261"
+                    - generic [ref=e382]:
+                      - link "Arjun Mehta Arjun Mehta 9d ago" [ref=e383] [cursor=pointer]:
+                        - /url: /profile/arjun_rides
+                        - img "Arjun Mehta" [ref=e384]
+                        - generic [ref=e385]:
+                          - generic [ref=e386]: Arjun Mehta
+                          - generic [ref=e387]: 9d ago
+                      - generic [ref=e388]:
+                        - button "Like this journey" [ref=e389]:
+                          - generic [ref=e392]: "1"
+                        - link "0 comments" [ref=e393] [cursor=pointer]:
+                          - /url: /journeys/be09724d-3d5c-41bf-9875-44502291ffbd#comments
+                          - generic [ref=e396]: "0"
+                        - button "Save this journey" [ref=e397]
+                - generic [ref=e400]:
+                  - link "slow 8 days ₹17,200 Dehradun → Mussoorie A slow week in Mussoorie and Dhanaulti" [ref=e401] [cursor=pointer]:
+                    - /url: /journeys/0b2fc83b-80ff-4fb6-adb9-8897bd417475
+                    - generic [ref=e402]:
+                      - generic [ref=e404]:
+                        - generic [ref=e405]: slow
+                        - generic [ref=e406]: 8 days
+                      - generic [ref=e407]: ₹17,200
+                      - generic [ref=e408]:
+                        - paragraph [ref=e409]:
+                          - generic [ref=e413]: Dehradun → Mussoorie
+                        - heading "A slow week in Mussoorie and Dhanaulti" [level=3] [ref=e414]
+                  - generic [ref=e415]:
+                    - generic [ref=e416]:
+                      - generic [ref=e417]: 35 km
+                      - generic [ref=e422]: 1h 30m
+                      - generic [ref=e423]: "308"
+                    - generic [ref=e427]:
+                      - link "Priya Sharma Priya Sharma 12d ago" [ref=e428] [cursor=pointer]:
+                        - /url: /profile/priya_travels
+                        - img "Priya Sharma" [ref=e429]
+                        - generic [ref=e430]:
+                          - generic [ref=e431]: Priya Sharma
+                          - generic [ref=e432]: 12d ago
+                      - generic [ref=e433]:
+                        - button "Like this journey" [ref=e434]:
+                          - generic [ref=e437]: "2"
+                        - link "0 comments" [ref=e438] [cursor=pointer]:
+                          - /url: /journeys/0b2fc83b-80ff-4fb6-adb9-8897bd417475#comments
+                          - generic [ref=e441]: "0"
+                        - button "Save this journey" [ref=e442]
+                - generic [ref=e445]:
+                  - link "weekend 2 days ₹6,500 Rishikesh → Tehri Tehri Lake overnight — the trip nobody books" [ref=e446] [cursor=pointer]:
+                    - /url: /journeys/b973f23c-5019-472c-811c-b615015abd68
+                    - generic [ref=e447]:
+                      - generic [ref=e449]:
+                        - generic [ref=e450]: weekend
+                        - generic [ref=e451]: 2 days
+                      - generic [ref=e452]: ₹6,500
+                      - generic [ref=e453]:
+                        - paragraph [ref=e454]:
+                          - generic [ref=e458]: Rishikesh → Tehri
+                        - heading "Tehri Lake overnight — the trip nobody books" [level=3] [ref=e459]
+                  - generic [ref=e460]:
+                    - generic [ref=e461]:
+                      - generic [ref=e462]: 96 km
+                      - generic [ref=e467]: 3h
+                      - generic [ref=e468]: "355"
+                    - generic [ref=e472]:
+                      - link "Dev Rawat Dev Rawat 15d ago" [ref=e473] [cursor=pointer]:
+                        - /url: /profile/dev_offroad
+                        - img "Dev Rawat" [ref=e474]
+                        - generic [ref=e475]:
+                          - generic [ref=e476]: Dev Rawat
+                          - generic [ref=e477]: 15d ago
+                      - generic [ref=e478]:
+                        - button "Like this journey" [ref=e479]:
+                          - generic [ref=e482]: "1"
+                        - link "0 comments" [ref=e483] [cursor=pointer]:
+                          - /url: /journeys/b973f23c-5019-472c-811c-b615015abd68#comments
+                          - generic [ref=e486]: "0"
+                        - button "Save this journey" [ref=e487]
+            - generic [ref=e490]:
+              - heading "Travellers on Travelora" [level=2] [ref=e495]
+              - generic [ref=e496]:
+                - link "Arjun Mehta Arjun Mehta 2 trips" [ref=e497] [cursor=pointer]:
+                  - /url: /profile/arjun_rides
+                  - img "Arjun Mehta" [ref=e498]
+                  - generic [ref=e499]: Arjun Mehta
+                  - generic [ref=e500]: 2 trips
+                - link "Priya Sharma Priya Sharma 2 trips" [ref=e501] [cursor=pointer]:
+                  - /url: /profile/priya_travels
+                  - img "Priya Sharma" [ref=e502]
+                  - generic [ref=e503]: Priya Sharma
+                  - generic [ref=e504]: 2 trips
+                - link "Dev Rawat Dev Rawat 2 trips" [ref=e505] [cursor=pointer]:
+                  - /url: /profile/dev_offroad
+                  - img "Dev Rawat" [ref=e506]
+                  - generic [ref=e507]: Dev Rawat
+                  - generic [ref=e508]: 2 trips
+      - complementary "Highlights" [ref=e509]:
+        - generic [ref=e510]:
+          - generic [ref=e511]:
+            - heading "Trending destinations" [level=3] [ref=e512]
+            - list [ref=e516]:
+              - listitem [ref=e517]:
+                - link "1 Auli 1 journey" [ref=e518] [cursor=pointer]:
+                  - /url: /destinations/auli
+                  - generic [ref=e519]: "1"
+                  - generic [ref=e521]:
+                    - generic [ref=e522]: Auli
+                    - generic [ref=e523]: 1 journey
+              - listitem [ref=e524]:
+                - link "2 Chopta 1 journey" [ref=e525] [cursor=pointer]:
+                  - /url: /destinations/chopta
+                  - generic [ref=e526]: "2"
+                  - generic [ref=e528]:
+                    - generic [ref=e529]: Chopta
+                    - generic [ref=e530]: 1 journey
+              - listitem [ref=e531]:
+                - link "3 Devprayag 1 journey" [ref=e532] [cursor=pointer]:
+                  - /url: /destinations/devprayag
+                  - generic [ref=e533]: "3"
+                  - generic [ref=e535]:
+                    - generic [ref=e536]: Devprayag
+                    - generic [ref=e537]: 1 journey
+              - listitem [ref=e538]:
+                - link "4 Kanatal 1 journey" [ref=e539] [cursor=pointer]:
+                  - /url: /destinations/kanatal
+                  - generic [ref=e540]: "4"
+                  - generic [ref=e542]:
+                    - generic [ref=e543]: Kanatal
+                    - generic [ref=e544]: 1 journey
+            - link "Explore all destinations" [ref=e545] [cursor=pointer]:
+              - /url: /explore
+          - generic [ref=e546]:
+            - heading "Best value trips" [level=3] [ref=e547]
+            - list [ref=e550]:
+              - listitem [ref=e551]:
+                - link "Gurgaon to Devprayag — the classic two-day run ₹3,250" [ref=e552] [cursor=pointer]:
+                  - /url: /journeys/5028fb13-6fe4-4a6e-a25e-531bf736e73c
+                  - generic [ref=e554]: Gurgaon to Devprayag — the classic two-day run
+                  - generic [ref=e556]: ₹3,250
+              - listitem [ref=e557]:
+                - link "Four days in Kanatal on a ₹6,000 budget ₹5,650" [ref=e558] [cursor=pointer]:
+                  - /url: /journeys/f884f0c3-d29d-4f24-a4ab-828b6754cc61
+                  - generic [ref=e560]: Four days in Kanatal on a ₹6,000 budget
+                  - generic [ref=e562]: ₹5,650
+              - listitem [ref=e563]:
+                - link "Tehri Lake overnight — the trip nobody books ₹6,500" [ref=e564] [cursor=pointer]:
+                  - /url: /journeys/b973f23c-5019-472c-811c-b615015abd68
+                  - generic [ref=e566]: Tehri Lake overnight — the trip nobody books
+                  - generic [ref=e568]: ₹6,500
+          - generic [ref=e569]:
+            - heading "Travellers to follow" [level=3] [ref=e570]
+            - list [ref=e576]:
+              - listitem [ref=e577]:
+                - link "Arjun Mehta Arjun Mehta @arjun_rides · 2 journeys" [ref=e578] [cursor=pointer]:
+                  - /url: /profile/arjun_rides
+                  - img "Arjun Mehta" [ref=e579]
+                  - generic [ref=e580]:
+                    - generic [ref=e581]: Arjun Mehta
+                    - generic [ref=e582]: "@arjun_rides · 2 journeys"
+              - listitem [ref=e583]:
+                - link "Priya Sharma Priya Sharma @priya_travels · 2 journeys" [ref=e584] [cursor=pointer]:
+                  - /url: /profile/priya_travels
+                  - img "Priya Sharma" [ref=e585]
+                  - generic [ref=e586]:
+                    - generic [ref=e587]: Priya Sharma
+                    - generic [ref=e588]: "@priya_travels · 2 journeys"
+              - listitem [ref=e589]:
+                - link "Dev Rawat Dev Rawat @dev_offroad · 2 journeys" [ref=e590] [cursor=pointer]:
+                  - /url: /profile/dev_offroad
+                  - img "Dev Rawat" [ref=e591]
+                  - generic [ref=e592]:
+                    - generic [ref=e593]: Dev Rawat
+                    - generic [ref=e594]: "@dev_offroad · 2 journeys"
+          - generic [ref=e595]:
+            - heading "Quick links" [level=3] [ref=e596]
+            - generic [ref=e597]:
+              - link "Open map" [ref=e598] [cursor=pointer]:
+                - /url: /map
+              - link "Explore" [ref=e603] [cursor=pointer]:
+                - /url: /explore
+              - link "Saved" [ref=e608] [cursor=pointer]:
+                - /url: /saved
+              - link "Log a trip" [ref=e612] [cursor=pointer]:
+                - /url: /journeys/new
+          - paragraph [ref=e616]: Travelora · Phase 1. Trips, AI planner, Remix, Passport and Communities arrive in Phase 2.
+  - button "Open Next.js Dev Tools" [ref=e622] [cursor=pointer]

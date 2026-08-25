@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: travel_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: travel
+      POSTGRES_PASSWORD: travel_dev_password
+      POSTGRES_DB: travel
+    # 5432 and 5433 are already taken on this machine by a native PostgreSQL
+    # install, which shadows Docker's published port. 5544 is free.
+    ports:
+      - "5544:5432"
+    volumes:
+      - travel_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U travel -d travel"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  travel_db_data:
