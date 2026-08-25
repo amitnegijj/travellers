@@ -6,10 +6,12 @@ import { FollowButton } from "@/components/social-buttons";
 import {
   Avatar, Badge, Card, EmptyState, LinkButton, Photo, SectionHeader, Stat, StatStrip,
 } from "@/components/ui";
+import { TravelMap, type UserPlace } from "@/components/travel-map";
 import { getSessionUser } from "@/lib/auth";
 import { queryOne } from "@/lib/db";
 import { formatMoney } from "@/lib/utils";
 import { listJourneys } from "@/server/journeys";
+import { journeyPlaces, listUserPlaces } from "@/server/user-places";
 
 export const dynamic = "force-dynamic";
 
@@ -57,9 +59,11 @@ export default async function ProfilePage({ params }: Props) {
 
   if (!profile) notFound();
 
-  const { items: journeys } = await listJourneys({
-    viewerId: viewer?.id ?? null, authorHandle: handle, limit: 12,
-  });
+  const [{ items: journeys }, pins, reached] = await Promise.all([
+    listJourneys({ viewerId: viewer?.id ?? null, authorHandle: handle, limit: 12 }),
+    listUserPlaces(handle, viewer?.id ?? null),
+    journeyPlaces(handle),
+  ]);
 
   const isSelf = viewer?.handle.toLowerCase() === handle.toLowerCase();
 
@@ -195,6 +199,14 @@ export default async function ProfilePage({ params }: Props) {
           </p>
         </Card>
       </div>
+
+      <TravelMap
+        handle={profile.handle}
+        displayName={profile.displayName}
+        initialPlaces={pins.items as UserPlace[]}
+        journeyPlaces={reached}
+        isOwner={pins.isOwner}
+      />
 
       <section>
         <SectionHeader title={isSelf ? "Your journeys" : `Journeys by ${profile.displayName}`} />

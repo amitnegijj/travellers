@@ -63,6 +63,18 @@ That's it. `setup` is idempotent — safe to re-run.
 | Media upload — client-side downscale before upload | ✅ |
 | Expenses — integer minor units, trigger-maintained totals | ✅ |
 | Follow / Like / Comment / Save — optimistic, trigger counters | ✅ |
+| Personal travel map — pin places, upload photo, per-pin privacy | ✅ |
+
+### Personal travel map
+
+Every profile carries a map of that traveller's places. Owners click the map to
+drop a pin, add a name, note, date and photo, and choose **public** or
+**private** per pin — private pins are visible only to the owner and never leave
+the server for anyone else. Pins default to private. Destinations reached via
+published journeys are shown too (grey), so the map isn't empty on day one.
+
+Enforcement lives in `server/user-places.ts`: every read takes an explicit
+`viewerId` and private rows are filtered in SQL, not in the UI.
 
 ### Design
 
@@ -128,8 +140,13 @@ db/
 - **Media is written to `public/uploads/`.** Fine for local dev; needs object
   storage + signed URLs before any deploy. The `media` table already stores a
   plain URL, so this is a one-file change.
-- **Map tiles use the MapLibre demo style** — low detail, no street-level zoom.
-  Set `NEXT_PUBLIC_MAP_STYLE_URL` to a MapTiler or Protomaps style for real tiles.
+- **Map tiles are CARTO raster basemaps** (OpenStreetMap data), no API key
+  needed, light and dark variants that follow the theme. Set
+  `NEXT_PUBLIC_MAP_STYLE_URL` to a vector style (MapTiler, Protomaps) to override.
+- **MapLibre's worker is served from `public/maplibre/`.** The worker its bundle
+  spawns does not start under Turbopack, which silently breaks every GeoJSON
+  source (route lines vanish while raster tiles and markers still render).
+  `npm run sync:map-worker` copies it from `node_modules`; `postinstall` runs it.
 - **Seed photos are remote Unsplash URLs**, so the seeded feed needs internet to
   look right. Cards fall back to a gradient when an image fails. User uploads are
   local and work offline.
