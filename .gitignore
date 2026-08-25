@@ -33,3 +33,7 @@ next-env.d.ts
 coverage/
 playwright-report/
 test-results/
+
+# playwright mcp scratch output
+.playwright-mcp/
+*.png
