@@ -7,9 +7,40 @@ import { queryOne } from "./db";
 const COOKIE = "travel_session";
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
-const secret = new TextEncoder().encode(
-  process.env.AUTH_SECRET ?? "dev_only_secret_change_me_in_production_0123456789abcdef"
-);
+const DEV_SECRET = "dev_only_secret_change_me_in_production_0123456789abcdef";
+
+let cached: Uint8Array | null = null;
+
+/**
+ * Session tokens are signed with this, so a known value means anyone can forge
+ * a cookie for any account. The dev fallback keeps local setup to zero config,
+ * but it ships in the repo — so in production a real AUTH_SECRET is mandatory
+ * and we refuse to sign or verify anything without one, rather than fail open.
+ *
+ * Resolved on first use, not at import: `next build` runs with NODE_ENV=production
+ * but has no business needing a runtime secret, and throwing at module scope
+ * would break the build instead of the misconfigured deploy.
+ */
+function authSecret() {
+  if (cached) return cached;
+
+  const fromEnv = process.env.AUTH_SECRET;
+
+  if (process.env.NODE_ENV === "production") {
+    if (!fromEnv || fromEnv === DEV_SECRET) {
+      throw new Error(
+        "AUTH_SECRET must be set to a private value in production. " +
+          "Generate one with: openssl rand -hex 32"
+      );
+    }
+    if (fromEnv.length < 32) {
+      throw new Error("AUTH_SECRET must be at least 32 characters.");
+    }
+  }
+
+  cached = new TextEncoder().encode(fromEnv || DEV_SECRET);
+  return cached;
+}
 
 export type SessionUser = {
   id: string;
@@ -26,7 +57,7 @@ export async function createSession(userId: string) {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${MAX_AGE}s`)
-    .sign(secret);
+    .sign(authSecret());
 
   const jar = await cookies();
   jar.set(COOKIE, token, {
@@ -50,7 +81,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   if (!token) return null;
 
   try {
-    const { payload } = await jwtVerify(token, secret);
+    const { payload } = await jwtVerify(token, authSecret());
     const userId = payload.sub;
     if (!userId) return null;
 
