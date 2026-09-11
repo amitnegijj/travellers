@@ -63,3 +63,16 @@ export function dayCount(start?: string | null, end?: string | null) {
 
 export const initials = (name: string) =>
   name.split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? "").join("");
+
+/**
+ * A Postgres `date` arrives from pg as a JS Date at local midnight, but
+ * `<input type="date">` only accepts YYYY-MM-DD. Local getters, so the day
+ * that comes back is the day that was stored.
+ */
+export function toDateInput(value: string | Date | null | undefined): string {
+  if (!value) return "";
+  const d = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(d.getTime())) return typeof value === "string" ? value : "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}

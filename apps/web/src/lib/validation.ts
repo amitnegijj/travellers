@@ -79,8 +79,17 @@ export const journeyCreateSchema = z.object({
   publish: z.boolean().default(false),
 });
 
+// `.partial()` alone is not enough: the create schema's `.default([])` survives
+// it, so a patch that only changes the title would arrive with empty arrays and
+// wipe every stop, expense, tip and photo. Here absence must mean "leave alone".
 export const journeyUpdateSchema = journeyCreateSchema.partial().extend({
   title: z.string().min(3).max(160).optional(),
+  bestSeason: z.array(z.string().max(12)).max(12).optional(),
+  stops: z.array(stopSchema).max(60).optional(),
+  expenses: z.array(expenseSchema).max(100).optional(),
+  tips: z.array(tipSchema).max(40).optional(),
+  mediaIds: z.array(z.string().uuid()).max(30).optional(),
+  publish: z.boolean().optional(),
 });
 
 export const commentSchema = z.object({

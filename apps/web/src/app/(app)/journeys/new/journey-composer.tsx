@@ -11,7 +11,7 @@ import {
   Badge, Button, Card, Field, Input, Photo, Select, Textarea,
 } from "@/components/ui";
 import { EXPENSE_CATEGORIES, journeyCreateSchema } from "@/lib/validation";
-import { cn, formatMoney, rupeesToMinor } from "@/lib/utils";
+import { cn, formatMoney, minorToRupees, rupeesToMinor } from "@/lib/utils";
 
 type Destination = {
   id: string; slug: string; name: string; region: string | null; lng: number; lat: number;
@@ -23,6 +23,34 @@ type TipDraft = { key: string; kind: "tip" | "warning"; body: string };
 
 const uid = () => Math.random().toString(36).slice(2);
 
+/**
+ * An existing journey rehydrated into the form. Kept as a plain shape rather
+ * than the server type so nothing server-side reaches the client bundle.
+ */
+export type ComposerInitial = {
+  title: string;
+  summary: string | null;
+  originName: string | null;
+  destinationId: string | null;
+  distanceM: number | null;
+  durationMin: number | null;
+  startDate: string | null;
+  endDate: string | null;
+  travelStyle: string | null;
+  difficulty: string | null;
+  vehicle: string | null;
+  status: string;
+  stops: {
+    name: string; note: string | null; arrivedOn: string | null;
+    lng: number | null; lat: number | null;
+  }[];
+  expenses: {
+    category: string; label: string | null; amountMinor: number; spentOn: string | null;
+  }[];
+  tips: { kind: string; body: string }[];
+  media: { id: string; url: string }[];
+};
+
 const STEPS = [
   { key: "basics", label: "Basic Info", icon: MapPin },
   { key: "route", label: "Route & Stops", icon: RouteIcon },
@@ -31,33 +59,73 @@ const STEPS = [
 ] as const;
 
 export function JourneyComposer({
-  destinations, presetDestinationSlug,
+  destinations, presetDestinationSlug, journeyId = null, initial = null,
 }: {
-  destinations: Destination[]; presetDestinationSlug: string | null;
+  destinations: Destination[];
+  presetDestinationSlug: string | null;
+  /** Present when editing an existing journey — switches the save from POST to PATCH. */
+  journeyId?: string | null;
+  initial?: ComposerInitial | null;
 }) {
   const router = useRouter();
   const preset = destinations.find((d) => d.slug === presetDestinationSlug);
 
+  const isEdit = !!journeyId;
+  const alreadyPublished = initial?.status === "published";
+
   const [step, setStep] = useState(0);
 
-  const [title, setTitle] = useState("");
-  const [summary, setSummary] = useState("");
-  const [originName, setOriginName] = useState("");
-  const [destinationId, setDestinationId] = useState(preset?.id ?? "");
-  const [distanceKm, setDistanceKm] = useState("");
-  const [durationHours, setDurationHours] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [travelStyle, setTravelStyle] = useState("");
-  const [difficulty, setDifficulty] = useState("");
-  const [vehicle, setVehicle] = useState("");
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [summary, setSummary] = useState(initial?.summary ?? "");
+  const [originName, setOriginName] = useState(initial?.originName ?? "");
+  const [destinationId, setDestinationId] = useState(initial?.destinationId ?? preset?.id ?? "");
+  const [distanceKm, setDistanceKm] = useState(
+    initial?.distanceM != null ? String(initial.distanceM / 1000) : ""
+  );
+  const [durationHours, setDurationHours] = useState(
+    initial?.durationMin != null ? String(initial.durationMin / 60) : ""
+  );
+  const [startDate, setStartDate] = useState(initial?.startDate ?? "");
+  const [endDate, setEndDate] = useState(initial?.endDate ?? "");
+  const [travelStyle, setTravelStyle] = useState(initial?.travelStyle ?? "");
+  const [difficulty, setDifficulty] = useState(initial?.difficulty ?? "");
+  const [vehicle, setVehicle] = useState(initial?.vehicle ?? "");
 
-  const [stops, setStops] = useState<StopDraft[]>([]);
-  const [expenses, setExpenses] = useState<ExpenseDraft[]>([]);
-  const [tips, setTips] = useState<TipDraft[]>([]);
-  const [media, setMedia] = useState<UploadedMedia[]>([]);
+  const [stops, setStops] = useState<StopDraft[]>(() =>
+    (initial?.stops ?? []).map((s) => ({
+      key: uid(),
+      name: s.name,
+      note: s.note ?? "",
+      // Match the saved coordinate back to a destination so the picker reopens on it.
+      destinationId:
+        destinations.find(
+          (d) =>
+            s.lng != null && s.lat != null &&
+            Math.abs(d.lng - s.lng) < 1e-6 && Math.abs(d.lat - s.lat) < 1e-6
+        )?.id ?? "",
+      arrivedOn: s.arrivedOn ?? "",
+    }))
+  );
+  const [expenses, setExpenses] = useState<ExpenseDraft[]>(() =>
+    (initial?.expenses ?? []).map((e) => ({
+      key: uid(),
+      category: e.category,
+      label: e.label ?? "",
+      rupees: String(minorToRupees(e.amountMinor)),
+      spentOn: e.spentOn ?? "",
+    }))
+  );
+  const [tips, setTips] = useState<TipDraft[]>(() =>
+    (initial?.tips ?? []).map((t) => ({
+      key: uid(),
+      kind: t.kind === "warning" ? "warning" : "tip",
+      body: t.body,
+    }))
+  );
+  const [media, setMedia] = useState<UploadedMedia[]>(initial?.media ?? []);
 
   const [pending, setPending] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -130,11 +198,14 @@ export function JourneyComposer({
 
     setPending(true);
     try {
-      const res = await fetch("/api/v1/journeys", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(parsed.data),
-      });
+      const res = await fetch(
+        journeyId ? `/api/v1/journeys/${journeyId}` : "/api/v1/journeys",
+        {
+          method: journeyId ? "PATCH" : "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(parsed.data),
+        }
+      );
 
       if (res.status === 401) { router.push("/login"); return; }
       if (!res.ok) {
@@ -144,12 +215,36 @@ export function JourneyComposer({
       }
 
       const { id } = await res.json();
-      router.push(publish ? `/journeys/${id}` : "/");
+      // Editing always lands back on the journey. A fresh draft goes to the
+      // author's own list — the only place an unpublished journey is reachable.
+      router.push(publish || alreadyPublished ? `/journeys/${id}` : "/journeys/mine");
       router.refresh();
     } catch {
       setError("Network error — is the server running?");
     } finally {
       setPending(false);
+    }
+  }
+
+  async function remove() {
+    if (!journeyId) return;
+    if (!window.confirm("Delete this journey for good? This cannot be undone.")) return;
+
+    setError(null);
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/v1/journeys/${journeyId}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setError(data?.error?.message ?? "Could not delete this journey");
+        return;
+      }
+      router.push("/journeys/mine");
+      router.refresh();
+    } catch {
+      setError("Network error — is the server running?");
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -555,10 +650,19 @@ export function JourneyComposer({
           </Button>
         ) : null}
 
-        <div className="ml-auto flex flex-wrap items-center gap-3">
-          <Button type="button" variant="ghost" size="lg" disabled={pending} onClick={() => submit(false)}>
-            Save draft
+        {isEdit ? (
+          <Button type="button" variant="ghost" size="lg" disabled={deleting} onClick={remove}>
+            <Trash2 size={15} />
+            {deleting ? "Deleting…" : "Delete"}
           </Button>
+        ) : null}
+
+        <div className="ml-auto flex flex-wrap items-center gap-3">
+          {alreadyPublished ? null : (
+            <Button type="button" variant="ghost" size="lg" disabled={pending} onClick={() => submit(false)}>
+              Save draft
+            </Button>
+          )}
 
           {step < STEPS.length - 1 ? (
             <Button type="button" size="lg" disabled={!canAdvance} onClick={() => setStep(step + 1)}>
@@ -567,7 +671,9 @@ export function JourneyComposer({
           ) : (
             <Button type="button" variant="create" size="lg" disabled={pending} onClick={() => submit(true)}>
               {pending ? <Loader2 size={16} className="animate-spin" /> : null}
-              {pending ? "Publishing…" : "Publish journey"}
+              {pending
+                ? alreadyPublished ? "Saving…" : "Publishing…"
+                : alreadyPublished ? "Save changes" : "Publish journey"}
             </Button>
           )}
         </div>
