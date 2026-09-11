@@ -37,3 +37,9 @@ test-results/
 # playwright mcp scratch output
 .playwright-mcp/
 *.png
+
+# graphify scratch output
+graphify-out/
+**/graphify-out/
+.graphify_*.json
+.graphify_python
