@@ -1,6 +1,6 @@
 import {
   AlertTriangle, CalendarDays, Car, Clock, Eye, IndianRupee, Lightbulb,
-  MapPin, Route, Star,
+  MapPin, PenLine, Route, Star,
 } from "lucide-react";
 import type { Metadata } from "next";
 import dynamicImport from "next/dynamic";
@@ -11,7 +11,9 @@ import { CATEGORY_LABEL, ExpenseDonut } from "@/components/expense-donut";
 import { JourneyGallery } from "@/components/journey-gallery";
 import { FollowButton, LikeButton, SaveButton } from "@/components/social-buttons";
 import { Tabs } from "@/components/tabs";
-import { Avatar, Badge, Card, EmptyState, Photo, Skeleton, Stat, StatStrip } from "@/components/ui";
+import {
+  Avatar, Badge, Card, EmptyState, LinkButton, Photo, Skeleton, Stat, StatStrip,
+} from "@/components/ui";
 import { AppError } from "@/lib/api";
 import { getSessionUser } from "@/lib/auth";
 import { queryOne } from "@/lib/db";
@@ -146,7 +148,14 @@ export default async function JourneyPage({ params }: Props) {
             </span>
           </Link>
 
-          {user?.handle !== journey.authorHandle ? (
+          {user?.handle === journey.authorHandle ? (
+            <div className="ml-auto flex items-center gap-2">
+              {journey.status !== "published" ? <Badge tone="warning">Draft</Badge> : null}
+              <LinkButton href={`/journeys/${journey.id}/edit`} variant="secondary" size="sm">
+                <PenLine size={14} /> Edit
+              </LinkButton>
+            </div>
+          ) : (
             <div className="ml-auto">
               <FollowButton
                 handle={journey.authorHandle}
@@ -155,7 +164,7 @@ export default async function JourneyPage({ params }: Props) {
                 isSelf={false}
               />
             </div>
-          ) : null}
+          )}
         </div>
       </header>
 

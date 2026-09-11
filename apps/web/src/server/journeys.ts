@@ -265,43 +265,97 @@ export async function updateJourney(
   authorId: string,
   input: Partial<JourneyCreateInput>
 ) {
-  const existing = await queryOne<{ author_id: string; status: string }>(
-    "select author_id, status from journeys where id = $1",
+  const existing = await queryOne<{
+    authorId: string; status: string;
+    title: string; summary: string | null;
+    originName: string | null; destinationName: string | null;
+    distanceM: number | null; durationMin: number | null;
+    startDate: string | null; travelStyle: string | null;
+    stopCount: number; expenseCount: number; tipCount: number; mediaCount: number;
+  }>(
+    `select j.author_id as "authorId", j.status, j.title, j.summary,
+            j.origin_name as "originName", j.destination_name as "destinationName",
+            j.distance_m as "distanceM", j.duration_min as "durationMin",
+            j.start_date as "startDate", j.travel_style as "travelStyle",
+            (select count(*) from journey_stops    x where x.journey_id = j.id)::int as "stopCount",
+            (select count(*) from journey_expenses x where x.journey_id = j.id)::int as "expenseCount",
+            (select count(*) from journey_tips     x where x.journey_id = j.id)::int as "tipCount",
+            (select count(*) from journey_media    x where x.journey_id = j.id)::int as "mediaCount"
+       from journeys j where j.id = $1`,
     [journeyId]
   );
   if (!existing) throw new AppError("not_found", "No such journey");
-  if (existing.author_id !== authorId) {
+  if (existing.authorId !== authorId) {
     throw new AppError("forbidden", "You can only edit your own journeys");
   }
 
+  // Only columns actually present in the patch are written, so an edit that
+  // clears a field really clears it — `coalesce` would silently keep the old
+  // value and make "remove my vehicle" impossible.
+  const COLUMNS: Record<string, string> = {
+    title: "title",
+    summary: "summary",
+    coverUrl: "cover_url",
+    originName: "origin_name",
+    destinationName: "destination_name",
+    destinationId: "destination_id",
+    distanceM: "distance_m",
+    durationMin: "duration_min",
+    startDate: "start_date",
+    endDate: "end_date",
+    travelStyle: "travel_style",
+    difficulty: "difficulty",
+    vehicle: "vehicle",
+    bestSeason: "best_season",
+  };
+
+  const sets: string[] = [];
+  const params: unknown[] = [journeyId];
+  for (const [key, column] of Object.entries(COLUMNS)) {
+    if (!(key in input)) continue;
+    const value = input[key as keyof JourneyCreateInput];
+    params.push(value === "" ? null : (value ?? null));
+    sets.push(`${column} = $${params.length}`);
+  }
+
+  if ("origin" in input) {
+    params.push(pointOf(input.origin));
+    sets.push(`origin_point = $${params.length}`);
+  }
+  if ("destination" in input) {
+    params.push(pointOf(input.destination));
+    sets.push(`destination_point = $${params.length}`);
+  }
+
+  // Completeness is a whole-journey score, so grade the merged result rather
+  // than the patch alone — otherwise a one-field edit reports near-zero.
+  const merged = {
+    title: input.title ?? existing.title,
+    summary: "summary" in input ? input.summary : existing.summary,
+    originName: "originName" in input ? input.originName : existing.originName,
+    destinationName: "destinationName" in input ? input.destinationName : existing.destinationName,
+    distanceM: "distanceM" in input ? input.distanceM : existing.distanceM,
+    durationMin: "durationMin" in input ? input.durationMin : existing.durationMin,
+    startDate: "startDate" in input ? input.startDate : existing.startDate,
+    travelStyle: "travelStyle" in input ? input.travelStyle : existing.travelStyle,
+    stops: input.stops ?? new Array(existing.stopCount),
+    expenses: input.expenses ?? new Array(existing.expenseCount),
+    tips: input.tips ?? new Array(existing.tipCount),
+    mediaIds: input.mediaIds ?? new Array(existing.mediaCount),
+  } as Partial<JourneyCreateInput>;
+
+  params.push(completenessOf(merged));
+  sets.push(`completeness = $${params.length}`);
+
+  params.push(input.publish ?? false);
+  const publishParam = `$${params.length}::boolean`;
+  sets.push(`status = case when ${publishParam} then 'published'::journey_status else status end`);
+  sets.push(
+    `published_at = case when ${publishParam} and published_at is null then now() else published_at end`
+  );
+
   return transaction(async (q) => {
-    await q(
-      `update journeys set
-         title            = coalesce($2, title),
-         summary          = coalesce($3, summary),
-         cover_url        = coalesce($4, cover_url),
-         origin_name      = coalesce($5, origin_name),
-         destination_name = coalesce($6, destination_name),
-         distance_m       = coalesce($7, distance_m),
-         duration_min     = coalesce($8, duration_min),
-         start_date       = coalesce($9, start_date),
-         end_date         = coalesce($10, end_date),
-         travel_style     = coalesce($11, travel_style),
-         difficulty       = coalesce($12, difficulty),
-         vehicle          = coalesce($13, vehicle),
-         status           = case when $14::boolean then 'published'::journey_status else status end,
-         published_at     = case when $14::boolean and published_at is null then now() else published_at end,
-         completeness     = $15
-       where id = $1`,
-      [
-        journeyId, input.title ?? null, input.summary ?? null, input.coverUrl ?? null,
-        input.originName ?? null, input.destinationName ?? null,
-        input.distanceM ?? null, input.durationMin ?? null,
-        input.startDate || null, input.endDate || null,
-        input.travelStyle ?? null, input.difficulty ?? null, input.vehicle ?? null,
-        input.publish ?? false, completenessOf(input),
-      ]
-    );
+    await q(`update journeys set ${sets.join(", ")} where id = $1`, params);
 
     // Children are replace-on-write; the published snapshot preserves history.
     if (input.stops || input.expenses || input.tips || input.mediaIds) {
@@ -312,6 +366,26 @@ export async function updateJourney(
       await writeChildren(q, journeyId, input);
     }
 
+    // Re-derive the simplified route whenever the shape of the trip moved.
+    if ("stops" in input || "origin" in input || "destination" in input) {
+      await q(
+        `update journeys j set route_simplified = sub.line
+           from (
+             select st_makeline(pt order by ord)::geography as line
+               from (
+                 select 0 as ord, origin_point::geometry as pt from journeys where id = $1
+                 union all
+                 select position + 1, location::geometry from journey_stops where journey_id = $1
+                 union all
+                 select 1000000, destination_point::geometry from journeys where id = $1
+               ) pts
+              where pt is not null
+           ) sub
+          where j.id = $1 and st_numpoints(sub.line::geometry) >= 2`,
+        [journeyId]
+      );
+    }
+
     if (input.publish) {
       const [{ next }] = (await q(
         `select coalesce(max(version), 0) + 1 as next
@@ -320,7 +394,7 @@ export async function updateJourney(
       )) as { next: number }[];
       await q(
         "insert into journey_versions (journey_id, version, snapshot) values ($1,$2,$3)",
-        [journeyId, next, JSON.stringify({ title: input.title, summary: input.summary })]
+        [journeyId, next, JSON.stringify({ title: merged.title, summary: merged.summary })]
       );
     }
 
@@ -378,3 +452,230 @@ export async function deleteJourney(journeyId: string, authorId: string) {
   if (existing.author_id !== authorId) throw new AppError("forbidden", "Not your journey");
   await query("delete from journeys where id = $1", [journeyId]);
 }
+
+// ---------------------------------------------------------------- trails
+// The immersive feed. Each journey is one full-screen "trail" the viewer
+// scrubs horizontally, stop by stop — so a card needs its stops, its photos
+// and its spend breakdown up front. Two round trips for the whole screen.
+
+export type TrailStop = {
+  id: string;
+  position: number;
+  name: string;
+  note: string | null;
+  arrivedOn: string | null;
+  lng: number | null;
+  lat: number | null;
+  photoUrl: string | null;
+  /** Running spend from the start of the trip through this stop, minor units. */
+  spentSoFarMinor: number;
+};
+
+export type Trail = JourneyCard & {
+  stops: TrailStop[];
+  photos: string[];
+  topCategory: string | null;
+  tipCount: number;
+};
+
+export async function listTrails(opts: FeedOptions = {}) {
+  const { items, nextCursor } = await listJourneys({ ...opts, limit: opts.limit ?? 8 });
+  if (items.length === 0) return { items: [] as Trail[], nextCursor };
+
+  const ids = items.map((j) => j.id);
+
+  const [stops, photos, categories, tips] = await Promise.all([
+    query<{
+      journeyId: string; id: string; position: number; name: string;
+      note: string | null; arrivedOn: string | null;
+      lng: number | null; lat: number | null;
+    }>(
+      `select journey_id as "journeyId", id, position, name, note,
+              arrived_on as "arrivedOn",
+              st_x(location::geometry) as lng, st_y(location::geometry) as lat
+         from journey_stops
+        where journey_id = any($1::uuid[])
+        order by journey_id, position`,
+      [ids]
+    ),
+    query<{ journeyId: string; url: string }>(
+      `select jm.journey_id as "journeyId", m.url
+         from journey_media jm join media m on m.id = jm.media_id
+        where jm.journey_id = any($1::uuid[])
+        order by jm.journey_id, jm.position`,
+      [ids]
+    ),
+    // Biggest spend category per journey — the headline stat on the card.
+    query<{ journeyId: string; category: string }>(
+      `select distinct on (journey_id)
+              journey_id as "journeyId", category
+         from journey_expenses
+        where journey_id = any($1::uuid[])
+        group by journey_id, category
+        order by journey_id, sum(amount_minor) desc`,
+      [ids]
+    ),
+    query<{ journeyId: string; count: number }>(
+      `select journey_id as "journeyId", count(*)::int as count
+         from journey_tips where journey_id = any($1::uuid[])
+        group by journey_id`,
+      [ids]
+    ),
+  ]);
+
+  const photosBy = new Map<string, string[]>();
+  for (const p of photos) {
+    const list = photosBy.get(p.journeyId) ?? [];
+    list.push(p.url);
+    photosBy.set(p.journeyId, list);
+  }
+  const categoryBy = new Map(categories.map((c) => [c.journeyId, c.category]));
+  const tipsBy = new Map(tips.map((t) => [t.journeyId, t.count]));
+
+  const stopsBy = new Map<string, TrailStop[]>();
+  for (const s of stops) {
+    const list = stopsBy.get(s.journeyId) ?? [];
+    list.push({ ...s, photoUrl: null, spentSoFarMinor: 0 });
+    stopsBy.set(s.journeyId, list);
+  }
+
+  return {
+    nextCursor,
+    items: items.map<Trail>((j) => {
+      const gallery = photosBy.get(j.id) ?? [];
+      const raw = stopsBy.get(j.id) ?? [];
+      const total = Number(j.totalExpenseMinor ?? 0);
+
+      // Spend is recorded per journey, not per stop. Distributing it evenly
+      // along the route is honest enough for a scrub meter and reads as a
+      // trip "burning" money as it moves — the real per-stop split arrives
+      // when the composer asks for it.
+      const withStop = raw.map((s, i) => ({
+        ...s,
+        photoUrl: gallery[i % Math.max(gallery.length, 1)] ?? j.coverUrl,
+        spentSoFarMinor: raw.length ? Math.round((total * (i + 1)) / raw.length) : total,
+      }));
+
+      return {
+        ...j,
+        stops: withStop,
+        photos: gallery.length ? gallery : j.coverUrl ? [j.coverUrl] : [],
+        topCategory: categoryBy.get(j.id) ?? null,
+        tipCount: tipsBy.get(j.id) ?? 0,
+      };
+    }),
+  };
+}
+
+// ------------------------------------------------- the author's own journeys
+// Drafts are invisible to every feed (they filter on status = 'published'),
+// so without this an author can never reach something they saved as a draft.
+
+export type MyJourney = {
+  id: string;
+  title: string;
+  summary: string | null;
+  coverUrl: string | null;
+  originName: string | null;
+  destinationName: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  status: "draft" | "published" | string;
+  completeness: number;
+  totalExpenseMinor: string;
+  updatedAt: string;
+  publishedAt: string | null;
+  likeCount: number;
+  commentCount: number;
+  viewCount: number;
+};
+
+export async function listMyJourneys(authorId: string) {
+  return query<MyJourney>(
+    `select j.id, j.title, j.summary, j.cover_url as "coverUrl",
+            j.origin_name as "originName", j.destination_name as "destinationName",
+            j.start_date as "startDate", j.end_date as "endDate",
+            j.status, j.completeness,
+            j.total_expense_minor as "totalExpenseMinor",
+            coalesce(j.updated_at, j.created_at) as "updatedAt",
+            j.published_at as "publishedAt",
+            coalesce(s.like_count, 0)    as "likeCount",
+            coalesce(s.comment_count, 0) as "commentCount",
+            coalesce(s.view_count, 0)    as "viewCount"
+       from journeys j
+       left join journey_stats s on s.journey_id = j.id
+      where j.author_id = $1
+      order by coalesce(j.updated_at, j.created_at) desc`,
+    [authorId]
+  );
+}
+
+/** The journey reshaped into exactly what the composer form needs to rehydrate. */
+export async function getJourneyForEdit(journeyId: string, authorId: string) {
+  const journey = await queryOne<{
+    authorId: string;
+    title: string;
+    summary: string | null;
+    coverUrl: string | null;
+    originName: string | null;
+    destinationName: string | null;
+    destinationId: string | null;
+    distanceM: number | null;
+    durationMin: number | null;
+    startDate: string | null;
+    endDate: string | null;
+    travelStyle: string | null;
+    difficulty: string | null;
+    vehicle: string | null;
+    status: string;
+    originLng: number | null;
+    originLat: number | null;
+  }>(
+    `select j.author_id as "authorId", j.title, j.summary, j.cover_url as "coverUrl",
+            j.origin_name as "originName", j.destination_name as "destinationName",
+            j.destination_id as "destinationId",
+            j.distance_m as "distanceM", j.duration_min as "durationMin",
+            j.start_date as "startDate", j.end_date as "endDate",
+            j.travel_style as "travelStyle", j.difficulty, j.vehicle, j.status,
+            st_x(j.origin_point::geometry) as "originLng",
+            st_y(j.origin_point::geometry) as "originLat"
+       from journeys j where j.id = $1`,
+    [journeyId]
+  );
+
+  if (!journey) throw new AppError("not_found", "No such journey");
+  if (journey.authorId !== authorId) {
+    throw new AppError("forbidden", "You can only edit your own journeys");
+  }
+
+  const [stops, expenses, tips, media] = await Promise.all([
+    query<{
+      name: string; note: string | null; arrivedOn: string | null;
+      lng: number | null; lat: number | null;
+    }>(
+      `select name, note, arrived_on as "arrivedOn",
+              st_x(location::geometry) as lng, st_y(location::geometry) as lat
+         from journey_stops where journey_id = $1 order by position`,
+      [journeyId]
+    ),
+    query<{ category: string; label: string | null; amountMinor: string; spentOn: string | null }>(
+      `select category, label, amount_minor as "amountMinor", spent_on as "spentOn"
+         from journey_expenses where journey_id = $1 order by spent_on nulls last, created_at`,
+      [journeyId]
+    ),
+    query<{ kind: string; body: string }>(
+      "select kind, body from journey_tips where journey_id = $1 order by created_at",
+      [journeyId]
+    ),
+    query<{ id: string; url: string }>(
+      `select m.id, m.url
+         from journey_media jm join media m on m.id = jm.media_id
+        where jm.journey_id = $1 order by jm.position`,
+      [journeyId]
+    ),
+  ]);
+
+  return { ...journey, stops, expenses, tips, media };
+}
+
+export type JourneyEditData = Awaited<ReturnType<typeof getJourneyForEdit>>;

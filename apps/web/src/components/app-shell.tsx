@@ -1,14 +1,15 @@
 "use client";
 
 import {
-  Bell, Bookmark, Compass, Home, LogOut, Map as MapIcon, MessageSquare,
-  Plus, Search, Settings, Sparkles, User, Users,
+  Bell, Bookmark, Compass, Home, LogOut, Luggage, Map as MapIcon, MessageSquare,
+  Plus, Search, Settings, User, Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { SessionUser } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, buttonClass } from "@/components/ui";
 
 const PRIMARY = [
@@ -21,7 +22,6 @@ const PRIMARY = [
 // Visible so the product shape is legible, but honestly labelled — these are
 // not built yet and must not pretend to be.
 const PHASE_2 = [
-  { label: "Trips", icon: Sparkles },
   { label: "Communities", icon: Users },
   { label: "Messages", icon: MessageSquare },
   { label: "Notifications", icon: Bell },
@@ -94,6 +94,8 @@ export function AppShell({
           </form>
 
           <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
+
             {user ? (
               <>
                 <Link
@@ -134,6 +136,9 @@ export function AppShell({
                         </div>
                         <Link href={`/profile/${user.handle}`} role="menuitem" className={menuItem}>
                           <User size={15} /> My profile
+                        </Link>
+                        <Link href="/journeys/mine" role="menuitem" className={menuItem}>
+                          <Luggage size={15} /> My trips &amp; drafts
                         </Link>
                         <Link href="/settings" role="menuitem" className={menuItem}>
                           <Settings size={15} /> Edit profile
@@ -188,6 +193,21 @@ export function AppShell({
                 {label}
               </Link>
             ))}
+
+            {user ? (
+              <Link
+                href="/journeys/mine"
+                aria-current={isActive("/journeys/mine") ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-3 rounded-[var(--radius)] px-3.5 py-2.5 text-sm font-semibold transition-colors",
+                  isActive("/journeys/mine")
+                    ? "bg-[var(--brand-soft)] text-[var(--brand)]"
+                    : "text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text)]"
+                )}
+              >
+                <Luggage size={18} strokeWidth={2.2} /> My trips
+              </Link>
+            ) : null}
 
             {user ? (
               <Link

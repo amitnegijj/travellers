@@ -2,11 +2,15 @@ import { Compass, Route, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { CategoryRail } from "@/components/category-rail";
+import { FeedSwitch } from "@/components/feed-switch";
+import { ImmersiveMode } from "@/components/immersive-mode";
 import { JourneyCard, JourneyCardSkeleton, JourneyHero, JourneyRailCard } from "@/components/journey-card";
+import { StoriesRail, StoriesRailSkeleton } from "@/components/stories-rail";
+import { TrailFeed } from "@/components/trail-feed";
 import { Avatar, EmptyState, LinkButton, Photo, SectionHeader } from "@/components/ui";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, type SessionUser } from "@/lib/auth";
 import { query } from "@/lib/db";
-import { listJourneys } from "@/server/journeys";
+import { listJourneys, listTrails } from "@/server/journeys";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -14,15 +18,88 @@ export const dynamic = "force-dynamic";
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ scope?: string }>;
+  searchParams: Promise<{ scope?: string; view?: string }>;
 }) {
-  const { scope } = await searchParams;
+  const { scope, view } = await searchParams;
   const user = await getSessionUser();
   const activeScope = scope === "following" && user ? "following" : "all";
 
+  // Trails is the default surface — the app opens on a feed, like every other
+  // social app. Grid is one tap away and keeps the full browse experience.
+  return view === "grid" ? (
+    <GridHome user={user} scope={activeScope} />
+  ) : (
+    <TrailsHome user={user} scope={activeScope} />
+  );
+}
+
+/* ========================================================================== */
+/* Trails — the immersive, full-bleed feed                                    */
+/* ========================================================================== */
+
+async function TrailsHome({
+  user, scope,
+}: {
+  user: SessionUser | null; scope: "all" | "following";
+}) {
+  const { items } = await listTrails({ viewerId: user?.id ?? null, scope, limit: 10 });
+
+  if (items.length === 0) {
+    return (
+      <div className="space-y-6">
+        <FeedSwitch view="trails" scope={scope} />
+        <ScopeTabs user={user} scope={scope} view="trails" />
+        {scope === "following" ? (
+          <EmptyState
+            icon={<Compass size={26} />}
+            title="Nothing from the people you follow yet"
+            description="Follow a few travellers and their trails will land right here."
+            action={<LinkButton href="/explore" variant="secondary">Find travellers</LinkButton>}
+          />
+        ) : (
+          <EmptyState
+            icon={<Route size={26} />}
+            title="No trails yet"
+            description="Be the first to log a route — where you went, what it cost, and what you'd do differently."
+            action={<LinkButton href="/journeys/new" variant="create">Log the first journey</LinkButton>}
+          />
+        )}
+      </div>
+    );
+  }
+
+  return (
+    // Break out of <main>'s padding so the feed runs edge to edge on mobile,
+    // and sits as a tall card between sidebar and rail on desktop.
+    <div
+      className="trail-scope relative -mx-4 -mt-5 -mb-28 h-[calc(100dvh-4rem)] overflow-hidden
+                 bg-black lg:mx-0 lg:-mb-10 lg:rounded-[var(--radius-xl)]"
+    >
+      <ImmersiveMode />
+      <TrailFeed trails={items} />
+
+      {/* Floating chrome — sits over the photo, never in the way of the card. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-start justify-between gap-3 p-3 sm:p-4">
+        <div className="pointer-events-auto flex flex-wrap items-center gap-2 pt-5">
+          <FeedSwitch view="trails" scope={scope} floating />
+          {user ? <ScopeTabs user={user} scope={scope} view="trails" floating /> : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ========================================================================== */
+/* Grid — the browse surface                                                  */
+/* ========================================================================== */
+
+async function GridHome({
+  user, scope,
+}: {
+  user: SessionUser | null; scope: "all" | "following";
+}) {
   return (
     <div className="space-y-8">
-      {/* ---------------------------------------------------------- greeting */}
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-[var(--text)] sm:text-[28px]">
           {user ? (
@@ -38,39 +115,77 @@ export default async function HomePage({
         </p>
       </div>
 
+      <Suspense fallback={<StoriesRailSkeleton />}>
+        <StoriesRail user={user} />
+      </Suspense>
+
       <CategoryRail />
 
-      {user ? (
-        <div
-          role="tablist"
-          aria-label="Feed scope"
-          className="inline-flex rounded-full border border-[var(--border)] bg-[var(--surface-2)] p-1"
-        >
-          {[
-            { key: "all", label: "For you", href: "/" },
-            { key: "following", label: "Following", href: "/?scope=following" },
-          ].map((tab) => (
-            <Link
-              key={tab.key}
-              href={tab.href}
-              role="tab"
-              aria-selected={activeScope === tab.key}
-              className={cn(
-                "rounded-full px-5 py-1.5 text-sm font-bold transition-all",
-                activeScope === tab.key
-                  ? "bg-[var(--brand)] text-[var(--brand-text)] shadow-sm"
-                  : "text-[var(--text-muted)] hover:text-[var(--text)]"
-              )}
-            >
-              {tab.label}
-            </Link>
-          ))}
-        </div>
-      ) : null}
+      <div className="flex flex-wrap items-center gap-2">
+        <FeedSwitch view="grid" scope={scope} />
+        <ScopeTabs user={user} scope={scope} view="grid" />
+      </div>
 
       <Suspense fallback={<FeedSkeleton />}>
-        <Feed scope={activeScope} viewerId={user?.id ?? null} />
+        <Feed scope={scope} viewerId={user?.id ?? null} />
       </Suspense>
+    </div>
+  );
+}
+
+function ScopeTabs({
+  user, scope, view, floating = false,
+}: {
+  user: SessionUser | null;
+  scope: "all" | "following";
+  view: "trails" | "grid";
+  floating?: boolean;
+}) {
+  if (!user) return null;
+
+  const href = (s: "all" | "following") => {
+    const params = new URLSearchParams();
+    if (view === "grid") params.set("view", "grid");
+    if (s === "following") params.set("scope", "following");
+    const qs = params.toString();
+    return qs ? `/?${qs}` : "/";
+  };
+
+  return (
+    <div
+      role="tablist"
+      aria-label="Feed scope"
+      className={cn(
+        "inline-flex rounded-full p-1",
+        floating ? "glass-strong" : "border border-[var(--border)] bg-[var(--surface-2)]"
+      )}
+    >
+      {([
+        { key: "all" as const, label: "For you" },
+        { key: "following" as const, label: "Following" },
+      ]).map((tab) => {
+        const on = scope === tab.key;
+        return (
+          <Link
+            key={tab.key}
+            href={href(tab.key)}
+            role="tab"
+            aria-selected={on}
+            className={cn(
+              "rounded-full px-4 py-1.5 text-[13px] font-bold transition-all",
+              on
+                ? floating
+                  ? "bg-white text-black"
+                  : "bg-[var(--brand)] text-[var(--brand-text)] shadow-sm"
+                : floating
+                  ? "text-white/70 hover:text-white"
+                  : "text-[var(--text-muted)] hover:text-[var(--text)]"
+            )}
+          >
+            {tab.label}
+          </Link>
+        );
+      })}
     </div>
   );
 }
