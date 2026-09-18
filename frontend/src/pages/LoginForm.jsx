@@ -1,10 +1,10 @@
-import { loginSchema } from "../validation/schemas.js";
+import { loginSchema } from "../validation/schemas.jsx";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { useSession } from "../context/SessionContext.jsx";
-import { Button, Field, Input } from "../components/ui/index.js";
+import { Button, Field, Input } from "../components/ui/index.jsx";
 
 export function LoginForm() {
   const navigate = useNavigate();

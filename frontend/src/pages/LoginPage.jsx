@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
 import { LoginForm } from "./LoginForm.jsx";
 
 export function LoginPage() {

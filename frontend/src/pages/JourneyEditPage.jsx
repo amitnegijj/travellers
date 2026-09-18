@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { JourneyComposer } from "../components/JourneyComposer.jsx";
 import { NotFoundBlock } from "../components/NotFound.jsx";
-import { PageHeader, Skeleton } from "../components/ui/index.js";
-import { useApi } from "../hooks/useApi.js";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
-import { toDateInput } from "../utils/index.js";
+import { PageHeader, Skeleton } from "../components/ui/index.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
+import { toDateInput } from "../utils/index.jsx";
 
 export function JourneyEditPage() {
   const { id } = useParams();

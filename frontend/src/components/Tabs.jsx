@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { cn } from "../utils/index.js";
+import { cn } from "../utils/index.jsx";
 
 /** Underlined tab bar — Overview / Itinerary / Map / Expenses / Tips. */
 export function Tabs({ items, className }) {

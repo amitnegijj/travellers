@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Button, ErrorState } from "./ui/index.js";
+import { Button, ErrorState } from "./ui/index.jsx";
 
 /**
  * Equivalent of Next's app/(app)/error.tsx — a render-time throw anywhere

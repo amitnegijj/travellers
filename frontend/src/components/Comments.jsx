@@ -1,10 +1,10 @@
-import { commentSchema } from "../validation/schemas.js";
+import { commentSchema } from "../validation/schemas.jsx";
 import { Loader2, MessageCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api, isUnauthorized } from "../api/client.js";
-import { Avatar, Button, EmptyState, LinkButton, Textarea } from "./ui/index.js";
-import { relativeTime } from "../utils/index.js";
+import { api, isUnauthorized } from "../api/client.jsx";
+import { Avatar, Button, EmptyState, LinkButton, Textarea } from "./ui/index.jsx";
+import { relativeTime } from "../utils/index.jsx";
 
 export function CommentSection({ journeyId, initialComments, currentUser, onPosted }) {
   const navigate = useNavigate();

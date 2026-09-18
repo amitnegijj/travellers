@@ -1,8 +1,8 @@
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { MapExplorer } from "../components/MapExplorer.jsx";
-import { PageHeader, Skeleton } from "../components/ui/index.js";
-import { useApi } from "../hooks/useApi.js";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
+import { PageHeader, Skeleton } from "../components/ui/index.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
 
 export function MapPage() {
   useDocumentTitle("Map");

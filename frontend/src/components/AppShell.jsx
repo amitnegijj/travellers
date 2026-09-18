@@ -5,9 +5,9 @@ import {
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSession } from "../context/SessionContext.jsx";
-import { cn } from "../utils/index.js";
+import { cn } from "../utils/index.jsx";
 import { ThemeToggle } from "./ThemeToggle.jsx";
-import { Avatar, buttonClass } from "./ui/index.js";
+import { Avatar, buttonClass } from "./ui/index.jsx";
 
 const PRIMARY = [
   { href: "/", label: "Home", icon: Home },

@@ -1,14 +1,14 @@
-import { userPlaceCreateSchema } from "../validation/schemas.js";
+import { userPlaceCreateSchema } from "../validation/schemas.jsx";
 import {
   Eye, EyeOff, Globe, Loader2, Lock, MapPin, Plus, Trash2, X,
 } from "lucide-react";
 import { lazy, Suspense, useCallback, useMemo, useState } from "react";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { MediaUploader } from "./MediaUploader.jsx";
 import {
   Badge, Button, Card, Field, Input, Photo, SectionHeader, Skeleton, Textarea,
-} from "./ui/index.js";
-import { cn } from "../utils/index.js";
+} from "./ui/index.jsx";
+import { cn } from "../utils/index.jsx";
 
 const MapCanvas = lazy(() => import("./MapCanvas.jsx").then((m) => ({ default: m.MapCanvas })));
 const MapFallback = () => <Skeleton className="h-[440px] w-full rounded-[var(--radius-xl)]" />;

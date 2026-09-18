@@ -1,6 +1,6 @@
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useEffect, useSyncExternalStore } from "react";
-import { cn } from "../utils/index.js";
+import { cn } from "../utils/index.jsx";
 
 export const THEME_KEY = "travelora-theme";
 export const DEFAULT_THEME = "light";

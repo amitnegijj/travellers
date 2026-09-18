@@ -1,8 +1,8 @@
-import { api } from "../api/client.js";
-import { PageHeader, Skeleton } from "../components/ui/index.js";
+import { api } from "../api/client.jsx";
+import { PageHeader, Skeleton } from "../components/ui/index.jsx";
 import { useSession } from "../context/SessionContext.jsx";
-import { useApi } from "../hooks/useApi.js";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
 import { ProfileForm } from "./ProfileForm.jsx";
 
 export function SettingsPage() {

@@ -13,9 +13,9 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api, isUnauthorized } from "../api/client.js";
-import { Avatar, Photo } from "./ui/index.js";
-import { cn, formatDistance, formatDuration, formatMoney, relativeTime } from "../utils/index.js";
+import { api, isUnauthorized } from "../api/client.jsx";
+import { Avatar, Photo } from "./ui/index.jsx";
+import { cn, formatDistance, formatDuration, formatMoney, relativeTime } from "../utils/index.jsx";
 
 export function TrailFeed({ trails }) {
   const [activeId, setActiveId] = useState(trails[0]?.id ?? null);

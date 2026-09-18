@@ -1,7 +1,7 @@
 import { Eye, MapPin, MessageCircle, Route, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Avatar, Badge, Card, Photo } from "./ui/index.js";
-import { dayCount, formatDistance, formatDuration, formatMoney, relativeTime, cn } from "../utils/index.js";
+import { Avatar, Badge, Card, Photo } from "./ui/index.jsx";
+import { dayCount, formatDistance, formatDuration, formatMoney, relativeTime, cn } from "../utils/index.jsx";
 import { LikeButton, SaveButton } from "./SocialButtons.jsx";
 
 /* ------------------------------------------------- standard feed card ---- */

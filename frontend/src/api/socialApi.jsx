@@ -1,5 +1,5 @@
-import { ENDPOINTS } from "../constants/endpoints.js";
-import { api } from "./client.js";
+import { ENDPOINTS } from "../constants/endpoints.jsx";
+import { api } from "./client.jsx";
 
 export const toggleLike = (journeyId) => api.post(ENDPOINTS.journeys.like(journeyId));
 export const toggleSave = (journeyId) => api.post(ENDPOINTS.journeys.save(journeyId));

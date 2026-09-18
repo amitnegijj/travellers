@@ -5,7 +5,7 @@ import {
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { cn } from "../utils/index.js";
+import { cn } from "../utils/index.jsx";
 
 /**
  * CARTO raster basemaps: real street-level detail, no API key, light + dark

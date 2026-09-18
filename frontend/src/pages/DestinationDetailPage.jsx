@@ -3,15 +3,15 @@ import {
 } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { JourneyCard } from "../components/JourneyCard.jsx";
 import { NotFoundBlock } from "../components/NotFound.jsx";
 import {
   Badge, Card, EmptyState, LinkButton, Photo, SectionHeader, Skeleton, Stat, StatStrip,
-} from "../components/ui/index.js";
-import { useApi } from "../hooks/useApi.js";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
-import { formatMoney } from "../utils/index.js";
+} from "../components/ui/index.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
+import { formatMoney } from "../utils/index.jsx";
 
 const MapCanvas = lazy(() => import("../components/MapCanvas.jsx").then((m) => ({ default: m.MapCanvas })));
 

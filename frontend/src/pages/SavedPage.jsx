@@ -1,10 +1,10 @@
 import { Bookmark } from "lucide-react";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { JourneyCard, JourneyCardSkeleton } from "../components/JourneyCard.jsx";
-import { EmptyState, LinkButton, PageHeader } from "../components/ui/index.js";
+import { EmptyState, LinkButton, PageHeader } from "../components/ui/index.jsx";
 import { useSession } from "../context/SessionContext.jsx";
-import { useApi } from "../hooks/useApi.js";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
 
 export function SavedPage() {
   useDocumentTitle("Saved");

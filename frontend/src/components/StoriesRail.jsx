@@ -1,9 +1,9 @@
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import { api } from "../api/client.js";
-import { useApi } from "../hooks/useApi.js";
-import { Avatar } from "./ui/index.js";
-import { cn } from "../utils/index.js";
+import { api } from "../api/client.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { Avatar } from "./ui/index.jsx";
+import { cn } from "../utils/index.jsx";
 
 // The stories rail, but the "story" is a real published journey — tapping a
 // ring drops you into that traveller's trail. A live ring means they posted in

@@ -1,9 +1,9 @@
 import { Bookmark, Compass, Flame, MapPin, TrendingUp, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { api } from "../api/client.js";
-import { useApi } from "../hooks/useApi.js";
-import { Avatar, Card, Photo, Skeleton } from "./ui/index.js";
-import { formatMoney } from "../utils/index.js";
+import { api } from "../api/client.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { Avatar, Card, Photo, Skeleton } from "./ui/index.jsx";
+import { formatMoney } from "../utils/index.jsx";
 
 /**
  * Right-hand rail on desktop. Was an async server component reading straight

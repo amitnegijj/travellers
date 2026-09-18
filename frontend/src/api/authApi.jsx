@@ -1,5 +1,5 @@
-import { ENDPOINTS } from "../constants/endpoints.js";
-import { api } from "./client.js";
+import { ENDPOINTS } from "../constants/endpoints.jsx";
+import { api } from "./client.jsx";
 
 export const login = (credentials) => api.post(ENDPOINTS.auth.login, credentials);
 export const signup = (input) => api.post(ENDPOINTS.auth.signup, input);

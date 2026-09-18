@@ -1,9 +1,9 @@
 import { useSearchParams } from "react-router-dom";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { JourneyComposer } from "../components/JourneyComposer.jsx";
-import { PageHeader, Skeleton } from "../components/ui/index.js";
-import { useApi } from "../hooks/useApi.js";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
+import { PageHeader, Skeleton } from "../components/ui/index.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
 
 export function JourneyNewPage() {
   useDocumentTitle("Log a journey");

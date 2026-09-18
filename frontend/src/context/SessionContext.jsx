@@ -4,7 +4,7 @@
 // server-component prop (AppShell, AuthLayout's redirect, etc.) reads it from
 // here instead.
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 
 const SessionContext = createContext(null);
 

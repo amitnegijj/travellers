@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { mediaUrl } from "../../api/client.js";
-import { cn } from "../../utils/index.js";
+import { mediaUrl } from "../../api/client.jsx";
+import { cn } from "../../utils/index.jsx";
 
 /* ----------------------------------------------------------------- Layout */
 

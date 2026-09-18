@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { cn } from "../../utils/index.js";
+import { cn } from "../../utils/index.jsx";
 
 /* ------------------------------------------------------------------ Button */
 

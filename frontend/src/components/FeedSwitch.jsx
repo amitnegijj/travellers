@@ -1,6 +1,6 @@
 import { LayoutGrid, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import { cn } from "../utils/index.js";
+import { cn } from "../utils/index.jsx";
 
 /**
  * Trails (immersive, one journey per screen) vs Grid (browse everything).

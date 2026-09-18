@@ -1,7 +1,7 @@
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { useRef, useState } from "react";
-import { api, mediaUrl } from "../api/client.js";
-import { cn } from "../utils/index.js";
+import { api, mediaUrl } from "../api/client.jsx";
+import { cn } from "../utils/index.jsx";
 
 const MAX_EDGE = 2560;
 const QUALITY = 0.82;

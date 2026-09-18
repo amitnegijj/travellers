@@ -1,5 +1,5 @@
-import { mediaUrl } from "../../api/client.js";
-import { cn, initials } from "../../utils/index.js";
+import { mediaUrl } from "../../api/client.jsx";
+import { cn, initials } from "../../utils/index.jsx";
 
 /* ------------------------------------------------------------------ Avatar */
 

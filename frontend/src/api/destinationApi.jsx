@@ -1,6 +1,6 @@
-import { ENDPOINTS } from "../constants/endpoints.js";
-import { api } from "./client.js";
-import { withQuery } from "./query.js";
+import { ENDPOINTS } from "../constants/endpoints.jsx";
+import { api } from "./client.jsx";
+import { withQuery } from "./query.jsx";
 
 export const listDestinations = (params = {}, signal) =>
   api.get(withQuery(ENDPOINTS.destinations.list, params), signal);

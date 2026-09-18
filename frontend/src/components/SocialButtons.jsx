@@ -1,9 +1,9 @@
 import { Bookmark, Heart, UserCheck, UserPlus } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useNavigate } from "react-router-dom";
-import { api, isUnauthorized } from "../api/client.js";
-import { buttonClass } from "./ui/index.js";
-import { cn } from "../utils/index.js";
+import { api, isUnauthorized } from "../api/client.jsx";
+import { buttonClass } from "./ui/index.jsx";
+import { cn } from "../utils/index.jsx";
 
 /** Optimistic toggle shared by like and save. Reverts on failure. */
 function useToggle(endpoint, initialActive, initialCount) {

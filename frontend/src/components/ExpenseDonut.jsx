@@ -1,4 +1,4 @@
-import { formatMoney } from "../utils/index.js";
+import { formatMoney } from "../utils/index.jsx";
 
 // Inline SVG donut — no charting dependency, theme-aware.
 const SLICE_COLORS = {

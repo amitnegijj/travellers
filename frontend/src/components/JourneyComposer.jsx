@@ -1,14 +1,14 @@
-import { EXPENSE_CATEGORIES, journeyCreateSchema } from "../validation/schemas.js";
+import { EXPENSE_CATEGORIES, journeyCreateSchema } from "../validation/schemas.jsx";
 import {
   Check, GripVertical, ImagePlus, Loader2, MapPin, Plus, Route as RouteIcon,
   Send, Trash2, Wallet,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { MediaUploader } from "./MediaUploader.jsx";
-import { Badge, Button, Card, Field, Input, Photo, Select, Textarea } from "./ui/index.js";
-import { cn, formatMoney, minorToRupees, rupeesToMinor } from "../utils/index.js";
+import { Badge, Button, Card, Field, Input, Photo, Select, Textarea } from "./ui/index.jsx";
+import { cn, formatMoney, minorToRupees, rupeesToMinor } from "../utils/index.jsx";
 
 const uid = () => Math.random().toString(36).slice(2);
 

@@ -4,7 +4,7 @@ import {
 } from "lucide-react";
 import { lazy, Suspense, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { CommentSection } from "../components/Comments.jsx";
 import { CATEGORY_LABEL, ExpenseDonut } from "../components/ExpenseDonut.jsx";
 import { JourneyGallery } from "../components/JourneyGallery.jsx";
@@ -13,13 +13,13 @@ import { FollowButton, LikeButton, SaveButton } from "../components/SocialButton
 import { Tabs } from "../components/Tabs.jsx";
 import {
   Avatar, Badge, Card, EmptyState, LinkButton, Photo, Skeleton, Stat, StatStrip,
-} from "../components/ui/index.js";
+} from "../components/ui/index.jsx";
 import { useSession } from "../context/SessionContext.jsx";
-import { useApi } from "../hooks/useApi.js";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
 import {
   dayCount, formatDateRange, formatDistance, formatDuration, formatMoney,
-} from "../utils/index.js";
+} from "../utils/index.jsx";
 
 const MapCanvas = lazy(() => import("../components/MapCanvas.jsx").then((m) => ({ default: m.MapCanvas })));
 

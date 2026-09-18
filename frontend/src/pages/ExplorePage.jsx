@@ -1,14 +1,14 @@
 import { MapPin, Mountain, Search as SearchIcon, Star } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { CategoryRail } from "../components/CategoryRail.jsx";
 import { JourneyCard, JourneyCardSkeleton } from "../components/JourneyCard.jsx";
 import {
   Avatar, Badge, Card, EmptyState, Input, PageHeader, Photo, SectionHeader, Skeleton,
-} from "../components/ui/index.js";
-import { useApi } from "../hooks/useApi.js";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
+} from "../components/ui/index.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
 
 export function ExplorePage() {
   useDocumentTitle("Explore");

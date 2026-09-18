@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import { Photo } from "./ui/index.js";
+import { Photo } from "./ui/index.jsx";
 
 /** Swipeable hero gallery with a 1/N counter, like the mockup. */
 export function JourneyGallery({ photos, title }) {

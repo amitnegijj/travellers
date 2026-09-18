@@ -1,8 +1,8 @@
 import { Layers, MapPin, Mountain, X } from "lucide-react";
 import { lazy, Suspense, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Badge, Photo, Skeleton } from "./ui/index.js";
-import { cn } from "../utils/index.js";
+import { Badge, Photo, Skeleton } from "./ui/index.jsx";
+import { cn } from "../utils/index.jsx";
 
 const MapCanvas = lazy(() => import("./MapCanvas.jsx").then((m) => ({ default: m.MapCanvas })));
 const MapFallback = () => <Skeleton className="h-[600px] w-full rounded-[var(--radius-xl)]" />;

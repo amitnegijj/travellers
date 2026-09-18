@@ -1,5 +1,5 @@
 import { Compass } from "lucide-react";
-import { EmptyState, LinkButton } from "./ui/index.js";
+import { EmptyState, LinkButton } from "./ui/index.jsx";
 
 /**
  * Shared by the catch-all route (app/(app)/not-found.tsx's old job) and any

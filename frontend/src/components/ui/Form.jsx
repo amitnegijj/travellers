@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "../../utils/index.js";
+import { cn } from "../../utils/index.jsx";
 
 /* ------------------------------------------------------------------- Input */
 

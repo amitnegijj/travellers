@@ -16,9 +16,9 @@ import {
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Suspense, lazy, useRef, useState } from "react";
-import { api } from "../api/client.js";
-import { useApi } from "../hooks/useApi.js";
-import { Skeleton } from "./ui/index.js";
+import { api } from "../api/client.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { Skeleton } from "./ui/index.jsx";
 
 const MapCanvas = lazy(() => import("./MapCanvas.jsx").then((m) => ({ default: m.MapCanvas })));
 

@@ -9,10 +9,10 @@
 //   <MapView markers={mine} />           fully controlled, no request at all
 import { MapPinned } from "lucide-react";
 import { lazy, Suspense, useMemo } from "react";
-import { api } from "../api/client.js";
-import { useApi } from "../hooks/useApi.js";
-import { EmptyState, ErrorState, SectionHeader, Skeleton } from "./ui/index.js";
-import { cn } from "../utils/index.js";
+import { api } from "../api/client.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { EmptyState, ErrorState, SectionHeader, Skeleton } from "./ui/index.jsx";
+import { cn } from "../utils/index.jsx";
 
 const MapCanvas = lazy(() => import("./MapCanvas.jsx").then((m) => ({ default: m.MapCanvas })));
 

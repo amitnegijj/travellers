@@ -1,7 +1,7 @@
 import { Compass, Route } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { api } from "../api/client.js";
+import { api } from "../api/client.jsx";
 import { CategoryRail } from "../components/CategoryRail.jsx";
 import { FeedSwitch } from "../components/FeedSwitch.jsx";
 import { ImmersiveMode } from "../components/ImmersiveMode.jsx";
@@ -10,11 +10,11 @@ import {
 } from "../components/JourneyCard.jsx";
 import { StoriesRail, StoriesRailSkeleton } from "../components/StoriesRail.jsx";
 import { TrailFeed } from "../components/TrailFeed.jsx";
-import { EmptyState, LinkButton, Photo, SectionHeader, Skeleton } from "../components/ui/index.js";
+import { EmptyState, LinkButton, Photo, SectionHeader, Skeleton } from "../components/ui/index.jsx";
 import { useSession } from "../context/SessionContext.jsx";
-import { useApi } from "../hooks/useApi.js";
-import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
-import { cn } from "../utils/index.js";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
+import { cn } from "../utils/index.jsx";
 
 // Three.js + fiber + drei is a heavy bundle — split out of the main chunk,
 // same as MapCanvas is elsewhere.
