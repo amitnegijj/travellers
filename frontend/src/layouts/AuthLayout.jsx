@@ -1,6 +1,6 @@
 import { Map as MapIcon, Route, Users, Wallet } from "lucide-react";
 import { Link, Outlet } from "react-router-dom";
-import { RequireGuest } from "../components/route-guards.jsx";
+import { RequireGuest } from "../components/RouteGuards.jsx";
 
 export function AuthLayout() {
   return (

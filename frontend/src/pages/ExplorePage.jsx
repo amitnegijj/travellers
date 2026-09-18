@@ -2,11 +2,11 @@ import { MapPin, Mountain, Search as SearchIcon, Star } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../api/client.js";
-import { CategoryRail } from "../components/category-rail.jsx";
-import { JourneyCard, JourneyCardSkeleton } from "../components/journey-card.jsx";
+import { CategoryRail } from "../components/CategoryRail.jsx";
+import { JourneyCard, JourneyCardSkeleton } from "../components/JourneyCard.jsx";
 import {
   Avatar, Badge, Card, EmptyState, Input, PageHeader, Photo, SectionHeader, Skeleton,
-} from "../components/ui.jsx";
+} from "../components/ui/index.js";
 import { useApi } from "../hooks/useApi.js";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
 

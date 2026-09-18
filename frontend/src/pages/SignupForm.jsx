@@ -1,10 +1,10 @@
-import { signupSchema } from "../lib/validation.js";
+import { signupSchema } from "../validation/schemas.js";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/client.js";
-import { useSession } from "../context/session.jsx";
-import { Button, Field, Input } from "../components/ui.jsx";
+import { useSession } from "../context/SessionContext.jsx";
+import { Button, Field, Input } from "../components/ui/index.js";
 
 export function SignupForm() {
   const navigate = useNavigate();

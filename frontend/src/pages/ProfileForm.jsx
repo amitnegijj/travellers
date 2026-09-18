@@ -1,10 +1,10 @@
-import { profileUpdateSchema } from "../lib/validation.js";
+import { profileUpdateSchema } from "../validation/schemas.js";
 import { Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { api } from "../api/client.js";
-import { MediaUploader } from "../components/media-uploader.jsx";
-import { Avatar, Button, Card, Field, Input, Textarea } from "../components/ui.jsx";
-import { useSession } from "../context/session.jsx";
+import { MediaUploader } from "../components/MediaUploader.jsx";
+import { Avatar, Button, Card, Field, Input, Textarea } from "../components/ui/index.js";
+import { useSession } from "../context/SessionContext.jsx";
 
 export function ProfileForm({ profile }) {
   const { refresh } = useSession();

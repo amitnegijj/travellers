@@ -1,8 +1,8 @@
 import { Bookmark } from "lucide-react";
 import { api } from "../api/client.js";
-import { JourneyCard, JourneyCardSkeleton } from "../components/journey-card.jsx";
-import { EmptyState, LinkButton, PageHeader } from "../components/ui.jsx";
-import { useSession } from "../context/session.jsx";
+import { JourneyCard, JourneyCardSkeleton } from "../components/JourneyCard.jsx";
+import { EmptyState, LinkButton, PageHeader } from "../components/ui/index.js";
+import { useSession } from "../context/SessionContext.jsx";
 import { useApi } from "../hooks/useApi.js";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
 

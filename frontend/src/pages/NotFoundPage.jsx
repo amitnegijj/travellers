@@ -1,4 +1,4 @@
-import { NotFoundBlock } from "../components/not-found.jsx";
+import { NotFoundBlock } from "../components/NotFound.jsx";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
 
 export function NotFoundPage() {

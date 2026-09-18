@@ -24,18 +24,40 @@ this same origin (`public/uploads/`, written to by `POST /api/v1/media`).
 
 ## Layout
 
-- `src/routes/` — one Express router per resource, mounted under `/api/v1` in
-  `src/app.js`. Paths match the old Next.js `app/api/v1/**/route.ts` files,
-  plus a few new ones (see below).
-- `src/services/` — the actual queries (`journeys.js`, `places.js`,
-  `social.js`, `user-places.js`), ported straight from the old
-  `apps/web/src/server/*.ts` — same SQL, same shapes, just without the types.
-- `src/lib/` — `db.js` (pg pool), `auth.js` (session cookie + JWT), `http.js`
-  (the `AppError` / `asyncHandler` / error-middleware plumbing that used to
-  live in `lib/api.ts`), and `validation.js` (the Zod request schemas).
-  `validation.js` is duplicated in `frontend/src/lib/` — the two apps
-  install independently, so there is no shared package linking them. Change a
-  rule in one and change it in the other.
+Strictly layered. A request flows **route → controller → service → repository
+→ db**, and back up. No layer skips another.
+
+- `src/routes/` — endpoint definitions only. One file per resource, all
+  mounted under `/api/v1` by `routes/index.js`. A route names a path, attaches
+  validation, and points at a controller — nothing else.
+- `src/controllers/` — request and response handling: read params, call a
+  service, send the result. No business logic, and never a database call.
+- `src/services/` — the business rules. Who may edit what, how a route line is
+  derived, how complete a draft is. No SQL, and no `req`/`res`.
+- `src/repositories/` — every SQL statement in the application. Nothing
+  outside this folder imports `config/database.js`. Grouped per aggregate, so
+  `journeyRepository.js` owns the journey row *and* its stops, expenses, tips
+  and media links, since they're written in one transaction.
+- `src/middleware/` — `authenticate.js` (session cookie → `req.user`),
+  `validate.js` (Zod), `upload.js` (multer), `errorHandler.js`, `notFound.js`.
+- `src/validators/` — the Zod request schemas, one module per resource.
+  Duplicated in `frontend/src/validation/` — the two apps install
+  independently, so there is no shared package linking them. Change a rule in
+  one and change it in the other.
+- `src/config/` — `env.js` (the only place `process.env` is read),
+  `database.js` (the pg pool), `constants.js` (cookie name, session TTL,
+  upload limits, page sizes).
+- `src/utils/` — `AppError`, `asyncHandler`, `response` (ok/fail), `cursor`,
+  `password` (bcrypt), `token` (jose).
+- `src/app.js` builds the Express app; `src/server.js` starts it.
+
+### Error handling
+
+Services throw `AppError`, `asyncHandler` forwards it, and `errorHandler`
+translates it to `{ error: { code, message, details } }`. Controllers contain
+no `try`/`catch`. A Zod failure becomes 422, a Postgres unique violation
+becomes 409, and anything unrecognised is logged server-side and returned as a
+flat 500 — database error text never reaches a client.
 
 ## Routes added that didn't exist before
 

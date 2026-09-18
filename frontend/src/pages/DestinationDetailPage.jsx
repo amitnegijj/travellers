@@ -4,16 +4,16 @@ import {
 import { lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../api/client.js";
-import { JourneyCard } from "../components/journey-card.jsx";
-import { NotFoundBlock } from "../components/not-found.jsx";
+import { JourneyCard } from "../components/JourneyCard.jsx";
+import { NotFoundBlock } from "../components/NotFound.jsx";
 import {
   Badge, Card, EmptyState, LinkButton, Photo, SectionHeader, Skeleton, Stat, StatStrip,
-} from "../components/ui.jsx";
+} from "../components/ui/index.js";
 import { useApi } from "../hooks/useApi.js";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
-import { formatMoney } from "../lib/utils.js";
+import { formatMoney } from "../utils/index.js";
 
-const MapCanvas = lazy(() => import("../components/map/map-canvas.jsx").then((m) => ({ default: m.MapCanvas })));
+const MapCanvas = lazy(() => import("../components/MapCanvas.jsx").then((m) => ({ default: m.MapCanvas })));
 
 export function DestinationDetailPage() {
   const { slug } = useParams();

@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { SessionProvider } from "./context/session.jsx";
-import { RequireAuth } from "./components/route-guards.jsx";
+import { SessionProvider } from "./context/SessionContext.jsx";
+import { RequireAuth } from "./components/RouteGuards.jsx";
 import { AppLayout } from "./layouts/AppLayout.jsx";
 import { AuthLayout } from "./layouts/AuthLayout.jsx";
 import { DestinationDetailPage } from "./pages/DestinationDetailPage.jsx";

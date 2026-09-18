@@ -5,23 +5,23 @@ import {
 import { lazy, Suspense, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api/client.js";
-import { CommentSection } from "../components/comments.jsx";
-import { CATEGORY_LABEL, ExpenseDonut } from "../components/expense-donut.jsx";
-import { JourneyGallery } from "../components/journey-gallery.jsx";
-import { NotFoundBlock } from "../components/not-found.jsx";
-import { FollowButton, LikeButton, SaveButton } from "../components/social-buttons.jsx";
-import { Tabs } from "../components/tabs.jsx";
+import { CommentSection } from "../components/Comments.jsx";
+import { CATEGORY_LABEL, ExpenseDonut } from "../components/ExpenseDonut.jsx";
+import { JourneyGallery } from "../components/JourneyGallery.jsx";
+import { NotFoundBlock } from "../components/NotFound.jsx";
+import { FollowButton, LikeButton, SaveButton } from "../components/SocialButtons.jsx";
+import { Tabs } from "../components/Tabs.jsx";
 import {
   Avatar, Badge, Card, EmptyState, LinkButton, Photo, Skeleton, Stat, StatStrip,
-} from "../components/ui.jsx";
-import { useSession } from "../context/session.jsx";
+} from "../components/ui/index.js";
+import { useSession } from "../context/SessionContext.jsx";
 import { useApi } from "../hooks/useApi.js";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
 import {
   dayCount, formatDateRange, formatDistance, formatDuration, formatMoney,
-} from "../lib/utils.js";
+} from "../utils/index.js";
 
-const MapCanvas = lazy(() => import("../components/map/map-canvas.jsx").then((m) => ({ default: m.MapCanvas })));
+const MapCanvas = lazy(() => import("../components/MapCanvas.jsx").then((m) => ({ default: m.MapCanvas })));
 
 export function JourneyDetailPage() {
   const { id } = useParams();

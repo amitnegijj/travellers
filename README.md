@@ -128,15 +128,24 @@ focus states. `prefers-reduced-motion` is honoured.
 ```
 frontend/src/          Vite + React 19 SPA (plain .jsx)
   pages/               one component per route
-  components/          design system + feature components
+  components/          feature components; components/ui/ holds the primitives
   layouts/             AppLayout (shell + rail), AuthLayout (login/signup)
-  context/session.jsx  who's signed in — fetched once from /api/v1/auth/me
-  api/client.js        the one place that calls the API
-  lib/validation.js    Zod schemas — kept in sync by hand with the backend copy
-backend/src/           Express API (plain .js)
-  routes/              one router per resource, mounted under /api/v1
-  services/            use-cases — THE ONLY place writes happen
-  lib/                 db pool, auth, http/error envelope, Zod schemas
+  context/             SessionContext — who's signed in, fetched once on boot
+  hooks/               useApi, useDocumentTitle
+  api/                 client.js plus one module per resource — the only
+                       place a URL is built or a request is made
+  constants/           endpoints, client routes, category lists
+  utils/               cn, money, distance/duration, dates
+  validation/          Zod schemas — kept in sync by hand with the backend copy
+backend/src/           Express API (plain .js), strictly layered
+  routes/              endpoint definitions only, wired to controllers
+  controllers/         request/response handling — no business logic
+  services/            business rules — no SQL, no req/res
+  repositories/        every SQL statement; nothing else touches the database
+  middleware/          auth, validation, uploads, error handling, 404
+  validators/          Zod request schemas, one module per resource
+  config/              env loading, the pg pool, policy constants
+  utils/               AppError, asyncHandler, response, cursor, password, token
 db/
   migrations/          forward-only SQL, applied in a transaction
   seed.mjs             Delhi NCR → Uttarakhand corridor
@@ -153,11 +162,15 @@ that used to query the database directly now fetches from an endpoint
 instead (see `backend/README.md` for exactly which routes are new versus
 ported 1:1).
 
-**Key rules** (apply to both `backend/src/services/` and, historically,
-`apps/web/src/server/`)
+**Key rules**
 
-- Nothing above the service layer touches the database directly. That seam is
-  what let the backend be extracted into its own app in the first place.
+- The backend flows strictly route → controller → service → repository → db,
+  and back up. No layer skips another: a controller never queries the
+  database, and a service never sees `req` or `res`.
+- Only `repositories/` writes SQL. That seam is what let the backend be
+  extracted into its own app in the first place, and it's what would let the
+  storage change without touching a business rule.
+- Components never call `fetch`. Everything goes through `src/api/`.
 - **Money is always integer minor units + a currency code.** Never a float.
 - **Routes are stored simplified.** Full-fidelity GPS tracks belong in object
   storage, not in a feed query.

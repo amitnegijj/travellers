@@ -2,17 +2,17 @@ import { MapPin, Route, Wallet } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../api/client.js";
-import { JourneyCard } from "../components/journey-card.jsx";
-import { NotFoundBlock } from "../components/not-found.jsx";
-import { FollowButton } from "../components/social-buttons.jsx";
+import { JourneyCard } from "../components/JourneyCard.jsx";
+import { NotFoundBlock } from "../components/NotFound.jsx";
+import { FollowButton } from "../components/SocialButtons.jsx";
 import {
   Avatar, Badge, Card, EmptyState, LinkButton, Photo, SectionHeader, Skeleton, Stat, StatStrip,
-} from "../components/ui.jsx";
-import { TravelMap } from "../components/travel-map.jsx";
-import { useSession } from "../context/session.jsx";
+} from "../components/ui/index.js";
+import { TravelMap } from "../components/TravelMap.jsx";
+import { useSession } from "../context/SessionContext.jsx";
 import { useApi } from "../hooks/useApi.js";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
-import { formatMoney } from "../lib/utils.js";
+import { formatMoney } from "../utils/index.js";
 
 /** Travel DNA — the share of a traveller's journeys in each style. Real data. */
 const DNA_STYLES = [

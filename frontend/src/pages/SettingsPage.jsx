@@ -1,6 +1,6 @@
 import { api } from "../api/client.js";
-import { PageHeader, Skeleton } from "../components/ui.jsx";
-import { useSession } from "../context/session.jsx";
+import { PageHeader, Skeleton } from "../components/ui/index.js";
+import { useSession } from "../context/SessionContext.jsx";
 import { useApi } from "../hooks/useApi.js";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
 import { ProfileForm } from "./ProfileForm.jsx";

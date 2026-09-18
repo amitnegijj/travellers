@@ -2,23 +2,23 @@ import { Compass, Route } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../api/client.js";
-import { CategoryRail } from "../components/category-rail.jsx";
-import { FeedSwitch } from "../components/feed-switch.jsx";
-import { ImmersiveMode } from "../components/immersive-mode.jsx";
+import { CategoryRail } from "../components/CategoryRail.jsx";
+import { FeedSwitch } from "../components/FeedSwitch.jsx";
+import { ImmersiveMode } from "../components/ImmersiveMode.jsx";
 import {
   JourneyCard, JourneyCardSkeleton, JourneyHero, JourneyRailCard,
-} from "../components/journey-card.jsx";
-import { StoriesRail, StoriesRailSkeleton } from "../components/stories-rail.jsx";
-import { TrailFeed } from "../components/trail-feed.jsx";
-import { EmptyState, LinkButton, Photo, SectionHeader, Skeleton } from "../components/ui.jsx";
-import { useSession } from "../context/session.jsx";
+} from "../components/JourneyCard.jsx";
+import { StoriesRail, StoriesRailSkeleton } from "../components/StoriesRail.jsx";
+import { TrailFeed } from "../components/TrailFeed.jsx";
+import { EmptyState, LinkButton, Photo, SectionHeader, Skeleton } from "../components/ui/index.js";
+import { useSession } from "../context/SessionContext.jsx";
 import { useApi } from "../hooks/useApi.js";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
-import { cn } from "../lib/utils.js";
+import { cn } from "../utils/index.js";
 
 // Three.js + fiber + drei is a heavy bundle — split out of the main chunk,
 // same as MapCanvas is elsewhere.
-const MapRoom = lazy(() => import("../components/room/MapRoom.jsx").then((m) => ({ default: m.MapRoom })));
+const MapRoom = lazy(() => import("../components/MapRoom.jsx").then((m) => ({ default: m.MapRoom })));
 
 export function HomePage() {
   useDocumentTitle(null);

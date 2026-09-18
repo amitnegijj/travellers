@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { api } from "../api/client.js";
-import { JourneyComposer } from "../components/journey-composer.jsx";
-import { PageHeader, Skeleton } from "../components/ui.jsx";
+import { JourneyComposer } from "../components/JourneyComposer.jsx";
+import { PageHeader, Skeleton } from "../components/ui/index.js";
 import { useApi } from "../hooks/useApi.js";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
 

@@ -1,6 +1,6 @@
 import { api } from "../api/client.js";
-import { MapExplorer } from "../components/map/map-explorer.jsx";
-import { PageHeader, Skeleton } from "../components/ui.jsx";
+import { MapExplorer } from "../components/MapExplorer.jsx";
+import { PageHeader, Skeleton } from "../components/ui/index.js";
 import { useApi } from "../hooks/useApi.js";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
 
