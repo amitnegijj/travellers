@@ -1,0 +1,435 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens — Travelora
+   Dark-first product surface (mobile mockup), clean light surface (web mockup).
+   brand  = blue   → primary actions, active nav, links
+   create = green  → create / generate CTAs
+   ai     = violet → AI-assisted surfaces
+   ========================================================================== */
+
+:root {
+  --bg:            #f4f6f9;
+  --bg-subtle:     #eaeef4;
+  --surface:       #ffffff;
+  --surface-2:     #f8fafc;
+  --surface-hover: #eff3f8;
+  --border:        #e3e8ef;
+  --border-strong: #cbd5e1;
+
+  --text:          #0f172a;
+  --text-muted:    #5b6779;
+  --text-faint:    #8b97a8;
+
+  --brand:         #2563eb;
+  --brand-hover:   #1d4ed8;
+  --brand-soft:    #e8f0fe;
+  --brand-text:    #ffffff;
+
+  --create:        #15803d;
+  --create-hover:  #126632;
+  --create-soft:   #e6f4ea;
+
+  --ai:            #7c3aed;
+  --ai-soft:       #f1eafe;
+
+  --star:          #f59e0b;
+  --danger:        #dc2626;
+  --danger-soft:   #fdecec;
+  --warning:       #b45309;
+  --warning-soft:  #fdf3e3;
+  --success:       #16a34a;
+  --success-soft:  #e7f6ec;
+
+  --radius:     0.75rem;
+  --radius-lg:  1.125rem;
+  --radius-sm:  0.5rem;
+  --radius-xl:  1.5rem;
+
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 0.06);
+  --shadow:    0 2px 10px rgb(15 23 42 / 0.08), 0 1px 3px rgb(15 23 42 / 0.05);
+  --shadow-lg: 0 16px 40px rgb(15 23 42 / 0.14), 0 4px 12px rgb(15 23 42 / 0.07);
+
+  --sidebar-w: 232px;
+  --rail-w:    320px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg:            #070b11;
+    --bg-subtle:     #0d131c;
+    --surface:       #111823;
+    --surface-2:     #161f2c;
+    --surface-hover: #1b2534;
+    --border:        #1e2a3a;
+    --border-strong: #2e3d52;
+
+    --text:          #e9eef6;
+    --text-muted:    #94a2b6;
+    --text-faint:    #6b7a90;
+
+    --brand:         #4d8dfa;
+    --brand-hover:   #6ba0fb;
+    --brand-soft:    #12233f;
+    --brand-text:    #06101f;
+
+    --create:        #22c55e;
+    --create-hover:  #34d576;
+    --create-soft:   #0d2418;
+
+    --ai:            #a78bfa;
+    --ai-soft:       #1c1533;
+
+    --star:          #fbbf24;
+    --danger:        #f87171;
+    --danger-soft:   #2a1315;
+    --warning:       #fbbf24;
+    --warning-soft:  #2a2010;
+    --success:       #4ade80;
+    --success-soft:  #0d2418;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
+    --shadow:    0 2px 12px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 20px 48px rgb(0 0 0 / 0.7), 0 6px 16px rgb(0 0 0 / 0.45);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:            #070b11;
+  --bg-subtle:     #0d131c;
+  --surface:       #111823;
+  --surface-2:     #161f2c;
+  --surface-hover: #1b2534;
+  --border:        #1e2a3a;
+  --border-strong: #2e3d52;
+
+  --text:          #e9eef6;
+  --text-muted:    #94a2b6;
+  --text-faint:    #6b7a90;
+
+  --brand:         #4d8dfa;
+  --brand-hover:   #6ba0fb;
+  --brand-soft:    #12233f;
+  --brand-text:    #06101f;
+
+  --create:        #22c55e;
+  --create-hover:  #34d576;
+  --create-soft:   #0d2418;
+
+  --ai:            #a78bfa;
+  --ai-soft:       #1c1533;
+
+  --star:          #fbbf24;
+  --danger:        #f87171;
+  --danger-soft:   #2a1315;
+  --warning:       #fbbf24;
+  --warning-soft:  #2a2010;
+  --success:       #4ade80;
+  --success-soft:  #0d2418;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
+  --shadow:    0 2px 12px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 20px 48px rgb(0 0 0 / 0.7), 0 6px 16px rgb(0 0 0 / 0.45);
+}
+
+@theme inline {
+  --color-bg:            var(--bg);
+  --color-bg-subtle:     var(--bg-subtle);
+  --color-surface:       var(--surface);
+  --color-surface-2:     var(--surface-2);
+  --color-surface-hover: var(--surface-hover);
+  --color-border:        var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text:          var(--text);
+  --color-text-muted:    var(--text-muted);
+  --color-text-faint:    var(--text-faint);
+  --color-brand:         var(--brand);
+  --color-brand-hover:   var(--brand-hover);
+  --color-brand-soft:    var(--brand-soft);
+  --color-create:        var(--create);
+  --color-ai:            var(--ai);
+  --color-star:          var(--star);
+  --color-danger:        var(--danger);
+  --color-success:       var(--success);
+  --font-sans: var(--font-sans-stack);
+}
+
+html {
+  --font-sans-stack: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  /* Light is the default; the two dark blocks below flip this back to dark so
+     scrollbars, date pickers and other native widgets follow the theme. The
+     immersive trail feed opts into dark locally via its own color-scheme. */
+  color-scheme: light;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans-stack);
+  -webkit-font-smoothing: antialiased;
+}
+
+* { border-color: var(--border); }
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------- utilities */
+
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-subtle);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.09), transparent);
+  animation: shimmer 1.6s infinite;
+}
+
+/* Horizontal card rails — hide the scrollbar, keep the scrolling */
+.rail {
+  display: flex;
+  gap: 0.875rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 2px;
+}
+.rail::-webkit-scrollbar { display: none; }
+.rail > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+/* Image scrim so white text stays readable on any photo */
+.scrim {
+  background: linear-gradient(
+    to top,
+    rgb(3 7 14 / 0.92) 0%,
+    rgb(3 7 14 / 0.65) 32%,
+    rgb(3 7 14 / 0.15) 62%,
+    transparent 100%
+  );
+}
+.scrim-soft {
+  background: linear-gradient(to top, rgb(3 7 14 / 0.78), rgb(3 7 14 / 0.1) 70%, transparent);
+}
+
+/* MapLibre theming */
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent) !important;
+  color: var(--text-muted) !important;
+}
+.maplibregl-ctrl-attrib a { color: var(--text-muted) !important; }
+.maplibregl-popup-content {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-lg) !important;
+  padding: 0.7rem 0.85rem !important;
+}
+.maplibregl-popup-tip {
+  border-top-color: var(--surface) !important;
+  border-bottom-color: var(--surface) !important;
+}
+.maplibregl-ctrl-group {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+}
+.maplibregl-ctrl-group button + button { border-top-color: var(--border) !important; }
+
+/* ==========================================================================
+   Trails — the immersive feed
+   Vertical snap = next journey. Horizontal swipe = scrub this journey's route.
+   Always dark: it is a photo surface, and photos want black around them.
+   ========================================================================== */
+
+.trail-scope {
+  --trail-ink:     #ffffff;
+  --trail-dim:     rgb(255 255 255 / 0.62);
+  --trail-faint:   rgb(255 255 255 / 0.38);
+  --trail-glass:   rgb(255 255 255 / 0.11);
+  --trail-glass-2: rgb(255 255 255 / 0.18);
+  --trail-stroke:  rgb(255 255 255 / 0.16);
+  color-scheme: dark;
+}
+
+/* Full-height vertical pager. Snap is mandatory so a card always lands square. */
+.trail-track {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-y: contain;
+}
+.trail-track::-webkit-scrollbar { display: none; }
+.trail-card { scroll-snap-align: start; scroll-snap-stop: always; }
+
+/* Frosted chrome that sits over photography without eating it. */
+.glass {
+  background: var(--trail-glass);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  border: 1px solid var(--trail-stroke);
+}
+.glass-strong {
+  background: rgb(8 11 18 / 0.55);
+  backdrop-filter: blur(26px) saturate(1.6);
+  -webkit-backdrop-filter: blur(26px) saturate(1.6);
+  border: 1px solid var(--trail-stroke);
+}
+
+/* Story ring — the live gradient halo, slowly rotating so the rail breathes. */
+@keyframes ring-spin { to { transform: rotate(360deg); } }
+.story-ring {
+  position: relative;
+  border-radius: 9999px;
+  padding: 2.5px;
+  isolation: isolate;
+}
+.story-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    #f97316, #ec4899, #8b5cf6, #3b82f6, #22d3ee, #22c55e, #f97316
+  );
+  animation: ring-spin 6s linear infinite;
+  z-index: -1;
+}
+.story-ring[data-seen="true"]::before {
+  background: rgb(255 255 255 / 0.22);
+  animation: none;
+}
+
+/* Double-tap like — the burst, Instagram's single best piece of feedback. */
+@keyframes heart-burst {
+  0%   { transform: scale(0.2) rotate(-14deg); opacity: 0; }
+  35%  { transform: scale(1.25) rotate(6deg);  opacity: 1; }
+  55%  { transform: scale(0.95) rotate(-2deg); opacity: 1; }
+  70%  { transform: scale(1.05) rotate(0deg);  opacity: 1; }
+  100% { transform: scale(1.4)  rotate(0deg);  opacity: 0; }
+}
+.heart-burst { animation: heart-burst 900ms cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
+
+/* Action-bar pop when a toggle turns on. */
+@keyframes pop { 0% { transform: scale(1); } 45% { transform: scale(1.35); } 100% { transform: scale(1); } }
+.pop { animation: pop 380ms cubic-bezier(0.2, 0.9, 0.3, 1); }
+
+/* The scrub meter's fill — money burning down the route as you swipe. */
+@keyframes meter-sheen { 100% { background-position: 200% 0; } }
+.meter-fill {
+  background: linear-gradient(90deg, #22c55e, #eab308, #f97316, #22c55e);
+  background-size: 200% 100%;
+  animation: meter-sheen 4s linear infinite;
+}
+
+/* The shared .scrim fades out by 62%, which is right for a short card but
+   leaves the trail caption on bare photo — a trail card is as tall as the
+   viewport, so its text block starts much higher up. This ramps over the whole
+   card and stays legible on a bright sky or a snowfield. */
+.trail-scrim {
+  background: linear-gradient(
+    to top,
+    rgb(3 7 14 / 0.94) 0%,
+    rgb(3 7 14 / 0.86) 22%,
+    rgb(3 7 14 / 0.62) 42%,
+    rgb(3 7 14 / 0.34) 60%,
+    rgb(3 7 14 / 0.12) 78%,
+    transparent 100%
+  );
+}
+
+/* Stop-to-stop crossfade when the route is scrubbed. */
+@keyframes trail-in {
+  from { opacity: 0; transform: translateY(10px) scale(1.015); }
+  to   { opacity: 1; transform: none; }
+}
+.trail-in { animation: trail-in 380ms cubic-bezier(0.22, 0.8, 0.3, 1); }
+
+/* Slow Ken Burns drift so a still photo still feels alive. */
+@keyframes kenburns {
+  from { transform: scale(1.06) translate3d(0, 0, 0); }
+  to   { transform: scale(1.16) translate3d(-1.2%, -1.6%, 0); }
+}
+.kenburns { animation: kenburns 18s ease-out alternate infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kenburns, .story-ring::before, .meter-fill { animation: none !important; }
+}
+
+/* --------------------------------------------------------- immersive mode
+   Set by <ImmersiveMode/> while a full-bleed photo surface is on screen.
+
+   The document stops scrolling at every width, so the trail pager is the only
+   scroller on the page. The dark chrome is mobile-only: below lg the feed runs
+   edge to edge and a light bar on top of black photography looks broken, while
+   at lg and up the feed is a rounded card inside the normal shell and the
+   sidebar still has to be legible in light mode. */
+
+body[data-immersive="true"] {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+@media (max-width: 1023.98px) {
+  body[data-immersive="true"] { background: #000; }
+
+  /* The shell paints --bg; under the header that light slab is what the glass
+     blurs, so it has to go black too or the bar reads mid-grey. */
+  body[data-immersive="true"] > div { background: #000; }
+
+  body[data-immersive="true"] > div > header {
+    background: rgb(8 11 18 / 0.5);
+    backdrop-filter: blur(22px) saturate(1.5);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    border-bottom-color: rgb(255 255 255 / 0.1);
+    color-scheme: dark;
+  }
+  body[data-immersive="true"] > div > header,
+  body[data-immersive="true"] > div > header a,
+  body[data-immersive="true"] > div > header span,
+  body[data-immersive="true"] > div > header input {
+    color: #fff;
+  }
+  body[data-immersive="true"] > div > header input {
+    background: rgb(255 255 255 / 0.1);
+    border-color: rgb(255 255 255 / 0.14);
+  }
+  body[data-immersive="true"] > div > header input::placeholder {
+    color: rgb(255 255 255 / 0.5);
+  }
+
+  /* Bottom tab bar rides the same dark glass so it reads as part of the photo. */
+  body[data-immersive="true"] > div > nav {
+    background: rgb(8 11 18 / 0.62);
+    backdrop-filter: blur(22px) saturate(1.5);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    border-top-color: rgb(255 255 255 / 0.1);
+  }
+  body[data-immersive="true"] > div > nav a { color: rgb(255 255 255 / 0.6); }
+  body[data-immersive="true"] > div > nav a[aria-current="page"] { color: #fff; }
+}

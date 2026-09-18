@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Travelora — Travel. Share. Inspire.</title>
+    <meta
+      name="description"
+      content="Real routes, real costs, real road conditions. A social travel platform where journeys become travel intelligence."
+    />
+    <script>
+      // Runs before first paint so a visitor who picked dark doesn't get a
+      // white flash. "system" removes the attribute and lets the
+      // prefers-color-scheme block in index.css win.
+      (function () {
+        try {
+          var t = localStorage.getItem("travelora-theme") || "light";
+          var el = document.documentElement;
+          if (t === "system") el.removeAttribute("data-theme");
+          else el.setAttribute("data-theme", t === "dark" ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50
+             focus:rounded-[var(--radius)] focus:bg-[var(--accent)] focus:px-4 focus:py-2
+             focus:text-[var(--accent-text)]"
+    >
+      Skip to content
+    </a>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
