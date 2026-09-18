@@ -6,7 +6,7 @@ import { useApi } from "../hooks/useApi.jsx";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
 
 export function JourneyNewPage() {
-  useDocumentTitle("Log a journey");
+  useDocumentTitle("Log a trip");
   const [searchParams] = useSearchParams();
   const destinationSlug = searchParams.get("destination");
 
@@ -18,8 +18,8 @@ export function JourneyNewPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <PageHeader
-        title="Log a journey"
-        description="Fill in what you remember. You can publish now and add the rest later."
+        title="Log a trip"
+        description="Just a title is enough to post. Add as much or as little as you like."
       />
       {loading ? (
         <Skeleton className="h-96 w-full" />
