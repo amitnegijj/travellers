@@ -1,12 +1,6 @@
 import { ENDPOINTS } from "../constants/endpoints.js";
 import { api } from "./client.js";
-
-const withQuery = (path, params) => {
-  const query = new URLSearchParams(
-    Object.entries(params).filter(([, v]) => v != null && v !== "")
-  ).toString();
-  return query ? `${path}?${query}` : path;
-};
+import { withQuery } from "./query.js";
 
 export const listJourneys = (params = {}, signal) =>
   api.get(withQuery(ENDPOINTS.journeys.list, params), signal);
@@ -25,5 +19,3 @@ export const deleteJourney = (id) => api.delete(ENDPOINTS.journeys.byId(id));
 
 export const listTrails = (params = {}, signal) =>
   api.get(withQuery(ENDPOINTS.trails, params), signal);
-
-export { withQuery };
