@@ -4,12 +4,9 @@
 import bcrypt from "bcryptjs";
 import { avatar, destinationCover, journeyCover, journeyPhoto, placePhoto } from "./images.mjs";
 import pg from "pg";
+import { connectionConfig } from "./connection.mjs";
 
-const connectionString =
-  process.env.DATABASE_URL ??
-  "postgresql://travel:travel_dev_password@localhost:5544/travel";
-
-const db = new pg.Client({ connectionString });
+const db = new pg.Client(connectionConfig());
 
 const pt = (lng, lat) => `SRID=4326;POINT(${lng} ${lat})`;
 const line = (coords) =>

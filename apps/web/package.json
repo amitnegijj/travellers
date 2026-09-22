@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync:map-worker": "node -e \"const fs=require('fs');fs.mkdirSync('public/maplibre',{recursive:true});for(const f of ['maplibre-gl-worker.mjs','maplibre-gl-shared.mjs'])fs.copyFileSync('node_modules/maplibre-gl/dist/'+f,'public/maplibre/'+f);console.log('map worker synced')\"",
+    "sync:map-worker": "node -e \"const fs=require('fs');const path=require('path');const dist=path.dirname(require.resolve('maplibre-gl/package.json'))+'/dist';fs.mkdirSync('public/maplibre',{recursive:true});for(const f of ['maplibre-gl-worker.mjs','maplibre-gl-shared.mjs'])fs.copyFileSync(dist+'/'+f,'public/maplibre/'+f);console.log('map worker synced')\"",
     "postinstall": "npm run sync:map-worker"
   },
   "dependencies": {

@@ -43,3 +43,16 @@ graphify-out/
 **/graphify-out/
 .graphify_*.json
 .graphify_python
+
+# user-uploaded photos — content, not source
+backend/public/uploads/
+apps/web/public/uploads/
+
+# copied in by each app's postinstall (sync:map-worker) — regenerate, don't commit
+frontend/public/maplibre/
+apps/web/public/maplibre/
+
+# generated reference docs (regenerate rather than commit)
+Travelora-*.html
+Travelora-*.docx
+~$*

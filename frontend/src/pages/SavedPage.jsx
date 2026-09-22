@@ -1,0 +1,49 @@
+import { Bookmark } from "lucide-react";
+import { api } from "../api/client.jsx";
+import { JourneyCard, JourneyCardSkeleton } from "../components/JourneyCard.jsx";
+import { EmptyState, LinkButton, PageHeader } from "../components/ui/index.jsx";
+import { useSession } from "../context/SessionContext.jsx";
+import { useApi } from "../hooks/useApi.jsx";
+import { useDocumentTitle } from "../hooks/useDocumentTitle.jsx";
+
+export function SavedPage() {
+  useDocumentTitle("Saved");
+  const { user } = useSession();
+
+  const { data, loading } = useApi(
+    (signal) => api.get("/api/v1/journeys?saved=me&limit=30", signal),
+    [user?.id]
+  );
+
+  const items = data?.items ?? [];
+
+  return (
+    <>
+      <PageHeader
+        title="Saved"
+        description="Routes you've bookmarked to come back to."
+      />
+
+      {loading ? (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <JourneyCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : items.length === 0 ? (
+        <EmptyState
+          icon={<Bookmark size={26} />}
+          title="Nothing saved yet"
+          description="Tap the bookmark on any journey and it'll show up here."
+          action={<LinkButton to="/explore" variant="secondary">Explore journeys</LinkButton>}
+        />
+      ) : (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((j) => (
+            <JourneyCard key={j.id} journey={j} />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}

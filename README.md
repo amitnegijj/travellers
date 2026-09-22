@@ -5,8 +5,12 @@ and real road conditions — not just a photo and a caption.
 
 Dark-first mobile surface, sidebar + right rail on desktop, photo-driven feed.
 
-**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 ·
+**Stack:** React 19 (Vite SPA, plain `.jsx`) · Node.js + Express (plain `.js`) ·
 PostgreSQL 16 + PostGIS 3.4 · MapLibre GL · Zod
+
+A React front end (`frontend`) talking over HTTP to a separate Express API
+(`backend`) — split out from an earlier Next.js App Router version. That
+version is kept at `apps/web` for reference; see [Architecture](#architecture).
 
 ---
 
@@ -14,12 +18,23 @@ PostgreSQL 16 + PostGIS 3.4 · MapLibre GL · Zod
 
 Requires **Node 18+** and **Docker Desktop running**.
 
+`frontend`, `backend` and `apps/web` are fully standalone — each has its
+own `package.json`, its own `node_modules`, and its own lockfile. Nothing at
+the repo root installs or runs them; there's no workspace tool linking them
+together. Install and run each one from inside its own folder.
+
 ```bash
-npm run setup     # installs deps, starts Postgres+PostGIS, migrates, seeds
-npm run dev       # http://localhost:3000
+npm run setup                        # root only: starts Postgres+PostGIS, migrates, seeds
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+
+cd backend && npm install && npm run dev   # API on http://localhost:4000
+cd frontend && npm install && npm run dev   # app on http://localhost:5173, in another terminal
 ```
 
-That's it. `setup` is idempotent — safe to re-run.
+`setup` is idempotent — safe to re-run. It only installs the root's own
+(small) dependency set, used by the `db:*` scripts below — it does **not**
+install `frontend` or `backend`'s dependencies.
 
 **Demo login:** `arjun@example.com` / `password123` (also `priya@example.com`, `dev@example.com`)
 
@@ -27,17 +42,27 @@ That's it. `setup` is idempotent — safe to re-run.
 
 | Service | Port | Note |
 |---|---|---|
-| Web app | 3000 | |
+| Client (Vite) | 5173 | the app |
+| API (Express) | 4000 | `frontend`'s `VITE_API_URL` must match |
 | PostgreSQL | **5544** | 5432 and 5433 are taken by a native Postgres install on this machine |
+| Web app (legacy) | 3000 | `cd apps/web && npm install && npm run dev` — the earlier Next.js version, kept for reference |
 
 ---
 
 ## Commands
 
+Run these from inside the relevant app folder (`frontend`, `backend`, `apps/web`):
+
 | Command | What it does |
 |---|---|
-| `npm run dev` | Start the app |
-| `npm run build` | Production build |
+| `npm run dev` | Start that app's dev server |
+| `npm run build` | Production build (`frontend` and `apps/web` only) |
+| `npm start` | Run the production build (`backend` and `apps/web`) |
+
+From the repo root:
+
+| Command | What it does |
+|---|---|
 | `npm run db:up` / `db:down` | Start / stop the database container |
 | `npm run db:migrate` | Apply pending migrations |
 | `npm run db:seed` | Reset and reseed content (destroys journeys/users) |
@@ -101,24 +126,51 @@ focus states. `prefers-reduced-motion` is honoured.
 ## Architecture
 
 ```
-apps/web/src/
-  app/(app)/       pages — React Server Components by default
-  app/(auth)/      login / signup
-  app/api/v1/      the backend — mobile-compatible Route Handlers
-  server/          use-cases — THE ONLY place writes happen
-  components/      design system + feature components
-  lib/             db pool, auth, validation, api envelope, utils
+frontend/src/          Vite + React 19 SPA (plain .jsx)
+  pages/               one component per route
+  components/          feature components; components/ui/ holds the primitives
+  layouts/             AppLayout (shell + rail), AuthLayout (login/signup)
+  context/             SessionContext — who's signed in, fetched once on boot
+  hooks/               useApi, useDocumentTitle
+  api/                 client.js plus one module per resource — the only
+                       place a URL is built or a request is made
+  constants/           endpoints, client routes, category lists
+  utils/               cn, money, distance/duration, dates
+  validation/          Zod schemas — kept in sync by hand with the backend copy
+backend/src/           Express API (plain .js), strictly layered
+  routes/              endpoint definitions only, wired to controllers
+  controllers/         request/response handling — no business logic
+  services/            business rules — no SQL, no req/res
+  repositories/        every SQL statement; nothing else touches the database
+  middleware/          auth, validation, uploads, error handling, 404
+  validators/          Zod request schemas, one module per resource
+  config/              env loading, the pg pool, policy constants
+  utils/               AppError, asyncHandler, response, cursor, password, token
 db/
-  migrations/      forward-only SQL, applied in a transaction
-  seed.mjs         Delhi NCR → Uttarakhand corridor
+  migrations/          forward-only SQL, applied in a transaction
+  seed.mjs             Delhi NCR → Uttarakhand corridor
+apps/web/              the original Next.js App Router version — untouched,
+                       fully standalone (own package.json/node_modules),
+                       kept as a fallback / reference
 ```
+
+`apps/web` was the original shape of this app: Next.js Server Components
+reading straight from Postgres while rendering, with `/api/v1/*` Route
+Handlers for mutations. `frontend` + `backend` is the same product
+split into a plain React front end and a plain Node/Express API — every page
+that used to query the database directly now fetches from an endpoint
+instead (see `backend/README.md` for exactly which routes are new versus
+ported 1:1).
 
 **Key rules**
 
-- `app/` never touches the database directly — it goes through `server/`.
-  That seam is what lets a domain be extracted later.
-- **Mutations are Route Handlers, not Server Actions.** React Native cannot call
-  Server Actions, so anything mobile will need is already an HTTP endpoint.
+- The backend flows strictly route → controller → service → repository → db,
+  and back up. No layer skips another: a controller never queries the
+  database, and a service never sees `req` or `res`.
+- Only `repositories/` writes SQL. That seam is what let the backend be
+  extracted into its own app in the first place, and it's what would let the
+  storage change without touching a business rule.
+- Components never call `fetch`. Everything goes through `src/api/`.
 - **Money is always integer minor units + a currency code.** Never a float.
 - **Routes are stored simplified.** Full-fidelity GPS tracks belong in object
   storage, not in a feed query.
@@ -131,27 +183,29 @@ db/
 |---|---|---|
 | Supabase (auth, DB, storage) | Postgres in Docker + custom JWT auth + local disk | Requested |
 | Counters in the use-case layer | Postgres triggers | Atomic and far less code at this scale |
-| pnpm + Turborepo | npm workspaces | pnpm not installed; fewer moving parts on Windows |
+| pnpm + Turborepo | Standalone app folders, no workspace tool | pnpm not installed; each app installs and runs fully independently |
+| Next.js App Router (Server Components) | React SPA (Vite) + Express API | Requested — see `apps/web/` for the original |
 
 ---
 
 ## Known limits (Phase 1, local-only)
 
-- **Media is written to `public/uploads/`.** Fine for local dev; needs object
-  storage + signed URLs before any deploy. The `media` table already stores a
-  plain URL, so this is a one-file change.
+- **Media is written to `backend/public/uploads/`**, served from the API
+  origin. Fine for local dev; needs object storage + signed URLs before any
+  deploy. The `media` table already stores a plain URL, so this is a
+  one-file change (`backend/src/routes/media.js`).
 - **Map tiles are CARTO raster basemaps** (OpenStreetMap data), no API key
   needed, light and dark variants that follow the theme. Set
-  `NEXT_PUBLIC_MAP_STYLE_URL` to a vector style (MapTiler, Protomaps) to override.
-- **MapLibre's worker is served from `public/maplibre/`.** The worker its bundle
-  spawns does not start under Turbopack, which silently breaks every GeoJSON
-  source (route lines vanish while raster tiles and markers still render).
-  `npm run sync:map-worker` copies it from `node_modules`; `postinstall` runs it.
+  `VITE_MAP_STYLE_URL` (in `frontend/.env`) to a vector style (MapTiler,
+  Protomaps) to override.
+- **MapLibre's worker is served from each app's own `public/maplibre/`.**
+  `npm run sync:map-worker` copies it from that app's own `node_modules` via
+  `require.resolve`; `postinstall` runs it automatically on every install.
 - **Seed photos are remote Unsplash URLs**, so the seeded feed needs internet to
   look right. Cards fall back to a gradient when an image fails. User uploads are
   local and work offline.
 - **No rate limiting yet.** Planned for Phase 2 as a Postgres-backed counter.
-- **`AUTH_SECRET` in `.env.local` is a dev placeholder.** Rotate before deploying.
+- **`AUTH_SECRET` in `backend/.env` is a dev placeholder.** Rotate before deploying.
 - **Distances and durations are user-entered**, not computed by a routing API.
   The `route_cache` strategy is designed but not built.
 - No RLS — authorization is enforced in the use-case layer. Reinstate RLS as the

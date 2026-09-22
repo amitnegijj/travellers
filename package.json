@@ -2,9 +2,6 @@
   "name": "travel-platform",
   "private": true,
   "version": "0.1.0",
-  "workspaces": [
-    "apps/*"
-  ],
   "scripts": {
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
@@ -12,11 +9,7 @@
     "db:seed": "node db/seed.mjs",
     "db:reset": "docker compose down -v && docker compose up -d && node db/wait.mjs && node db/migrate.mjs && node db/seed.mjs",
     "db:psql": "docker exec -it travel_db psql -U travel -d travel",
-    "setup": "npm install && npm run db:up && node db/wait.mjs && npm run db:migrate && npm run db:seed",
-    "dev": "npm run dev --workspace=web",
-    "build": "npm run build --workspace=web",
-    "start": "npm run start --workspace=web",
-    "lint": "npm run lint --workspace=web"
+    "setup": "npm install && npm run db:up && node db/wait.mjs && npm run db:migrate && npm run db:seed"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
