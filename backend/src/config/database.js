@@ -2,8 +2,32 @@
 import { Pool } from "pg";
 import { env } from "./env.js";
 
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
+
+/**
+ * Local Docker Postgres has no SSL; hosted Postgres (Supabase, Neon, …)
+ * refuses connections without it, so SSL is on for any non-local host.
+ *
+ * `sslmode` is stripped from the URL because node-postgres lets it override
+ * the `ssl` option, and treats `require` as full certificate verification —
+ * which rejects Supabase's pooler certificate chain.
+ */
+function connectionOptions() {
+  const url = new URL(env.databaseUrl);
+  const useSsl =
+    env.databaseSsl === "true" ? true
+      : env.databaseSsl === "false" ? false
+        : !LOCAL_HOSTS.has(url.hostname);
+
+  url.searchParams.delete("sslmode");
+  return {
+    connectionString: url.toString(),
+    ssl: useSsl ? { rejectUnauthorized: false } : false,
+  };
+}
+
 export const pool = new Pool({
-  connectionString: env.databaseUrl,
+  ...connectionOptions(),
   max: 10,
 });
 

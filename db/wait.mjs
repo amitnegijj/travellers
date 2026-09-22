@@ -1,14 +1,11 @@
 // Blocks until Postgres accepts connections, so `setup` can chain safely.
 import pg from "pg";
-
-const connectionString =
-  process.env.DATABASE_URL ??
-  "postgresql://travel:travel_dev_password@localhost:5544/travel";
+import { connectionConfig } from "./connection.mjs";
 
 const deadline = Date.now() + 60_000;
 
 while (Date.now() < deadline) {
-  const client = new pg.Client({ connectionString, connectionTimeoutMillis: 2000 });
+  const client = new pg.Client(connectionConfig({ connectionTimeoutMillis: 2000 }));
   try {
     await client.connect();
     await client.query("select 1");

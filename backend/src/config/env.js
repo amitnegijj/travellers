@@ -15,6 +15,8 @@ export const env = Object.freeze({
   databaseUrl:
     process.env.DATABASE_URL ??
     "postgresql://travel:travel_dev_password@localhost:5544/travel",
+  // "true" | "false" forces it; unset means on for any non-local host.
+  databaseSsl: process.env.DATABASE_SSL,
 
   authSecret: process.env.AUTH_SECRET,
 });

@@ -4,15 +4,12 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
+import { connectionConfig } from "./connection.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dir = join(here, "migrations");
 
-const connectionString =
-  process.env.DATABASE_URL ??
-  "postgresql://travel:travel_dev_password@localhost:5544/travel";
-
-const client = new pg.Client({ connectionString });
+const client = new pg.Client(connectionConfig());
 
 async function main() {
   await client.connect();

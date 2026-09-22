@@ -160,7 +160,7 @@ account or trip you created.
 | Folder | What it actually is |
 |---|---|
 | `apps/web` | An older Next.js version of the same app, kept for reference. Own `npm install`, runs on port 3000. You don't need it. |
-| `supabase` | A leftover config file. No code uses it — the database is plain Postgres in Docker. |
+| `supabase` | Supabase CLI config for local development. Not needed to run the app, or to host the database on Supabase (see the section below). |
 | `db` | Migration and seed scripts. The `npm run db:*` commands drive these; you never run the files directly. |
 | `node_modules` | There are three, one per app. That's intentional — the apps are standalone, with no shared workspace. |
 
@@ -178,3 +178,61 @@ All from the repo root.
 
 **After pulling new code:** run `npm install` in whichever app changed, and
 `npm run db:migrate` from the root if the pull added anything to `db/migrations/`.
+
+---
+
+## Hosting the database on Supabase
+
+The app needs PostgreSQL with PostGIS. Supabase provides both, and the
+migrations run on it unchanged. SSL, which Supabase requires, switches on
+automatically for any non-local database host.
+
+### 1. Create the project
+
+1. Create a project at supabase.com. Pick the region closest to your users
+   (e.g. Mumbai). Save the **database password** — you need it below.
+2. In **Database → Extensions**, make sure **postgis** is enabled. The first
+   migration also enables it, so this is only a check.
+
+### 2. Copy the right connection string
+
+In the project, click **Connect** and copy the **Session pooler** string. It
+looks like:
+
+```
+postgresql://postgres.<project-ref>:[YOUR-PASSWORD]@aws-0-<region>.pooler.supabase.com:5432/postgres
+```
+
+Use the **Session pooler**, not "Direct connection". The direct address is
+IPv6-only, and many hosts (Render included) can't reach it.
+
+Replace `[YOUR-PASSWORD]` with your password. If the password contains
+symbols like `@ # / : ?`, URL-encode them (`@` → `%40`, `#` → `%23`), or
+simply reset it in Supabase to letters and numbers only.
+
+### 3. Create the tables
+
+From the repo root, in PowerShell:
+
+```powershell
+$env:DATABASE_URL = "postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres"
+npm install
+npm run db:migrate
+```
+
+macOS / Linux: `DATABASE_URL="..." npm run db:migrate`
+
+### 4. Demo data — only if you want it
+
+```powershell
+npm run db:seed
+```
+
+**Don't seed a database real people will use.** The seed creates demo
+accounts that anyone can log into with the public password `password123`,
+and it wipes existing trips and accounts every time it runs.
+
+### 5. Point the backend at it
+
+Wherever the backend is hosted, set its `DATABASE_URL` to the same Session
+pooler string. Nothing else in the backend needs to change.
