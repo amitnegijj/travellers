@@ -21,18 +21,17 @@ export async function storeImage({ ownerId, file, width, height }) {
     throw new AppError("validation", "Only JPEG, PNG, WebP or AVIF images are allowed");
   }
   if (file.size > UPLOAD_MAX_BYTES) {
-    throw new AppError("validation", "Image is too large — max 6 MB after downscaling");
+    throw new AppError("validation", "Image is too large — max 4 MB after downscaling");
   }
 
   const ext = file.mimetype.split("/")[1].replace("jpeg", "jpg");
   const filename = `${randomUUID()}.${ext}`;
 
-  await mkdir(UPLOAD_DIR, { recursive: true });
-  await writeFile(path.join(UPLOAD_DIR, filename), file.buffer);
+  const url = await saveObject(filename, file.buffer, file.mimetype);
 
   return mediaRepository.insert({
     ownerId,
-    url: `/uploads/${filename}`,
+    url,
     mime: file.mimetype,
     width,
     height,

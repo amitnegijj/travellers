@@ -28,7 +28,9 @@ function connectionOptions() {
 
 export const pool = new Pool({
   ...connectionOptions(),
-  max: 10,
+  // Every serverless instance opens its own pool; keep each one small so a
+  // burst of instances can't exhaust the database's connection limit.
+  max: env.isServerless ? 2 : 10,
 });
 
 export async function query(text, params = []) {

@@ -236,3 +236,64 @@ and it wipes existing trips and accounts every time it runs.
 
 Wherever the backend is hosted, set its `DATABASE_URL` to the same Session
 pooler string. Nothing else in the backend needs to change.
+
+---
+
+## Deploying to Vercel
+
+One Vercel project serves both the app and the API from the same domain:
+`vercel.json` builds `frontend/` and routes every `/api/*` request to the
+Express app through `api/index.mjs`. Same domain means the login cookie and
+CORS need no special setup. Do the Supabase section above first.
+
+### 1. Make a storage bucket for photos
+
+Vercel has no lasting disk, so uploaded photos go to Supabase Storage.
+
+1. In Supabase, open **Storage → New bucket**.
+2. Name it `media`, switch **Public bucket** on, and create it.
+3. From **Project Settings → API**, copy the **Project URL** and the
+   **service_role** secret key (under "Project API keys"; it may be labelled
+   *secret*). Never put this key in frontend code or commit it.
+
+### 2. Import the project
+
+1. At vercel.com, **Add New → Project**, and import the GitHub repo.
+2. Leave **Root Directory** as the repo root (`./`). Don't change the build
+   settings; `vercel.json` sets them.
+3. Before deploying, add these **Environment Variables**:
+
+| Name | Value |
+|---|---|
+| `DATABASE_URL` | Supabase **Transaction pooler** string (port **6543**), with your password |
+| `AUTH_SECRET` | A long random string, 32+ characters (see below) |
+| `CLIENT_ORIGIN` | Your Vercel URL, e.g. `https://travelora.vercel.app` |
+| `SUPABASE_URL` | Project URL from step 1 |
+| `SUPABASE_SERVICE_ROLE_KEY` | service_role key from step 1 |
+
+Generate `AUTH_SECRET` with:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
+
+Don't set `VITE_API_URL` on Vercel; the app calls `/api` on its own domain.
+
+4. Click **Deploy**. Afterwards, if your real URL differs from the
+   `CLIENT_ORIGIN` you guessed, fix it and redeploy.
+
+### Which Supabase string goes where
+
+| Use | Pooler | Port |
+|---|---|---|
+| `npm run db:migrate` from your PC | Session pooler | 5432 |
+| `DATABASE_URL` on Vercel | Transaction pooler | 6543 |
+
+Vercel starts many short-lived copies of the API; the transaction pooler is
+built for that.
+
+### Limits to know
+
+- Photos are capped at 4 MB per upload (Vercel's request limit is 4.5 MB). The
+  app shrinks photos in the browser first, so this rarely matters.
+- Vercel's free Hobby plan is for non-commercial projects.

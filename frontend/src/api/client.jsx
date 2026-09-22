@@ -1,7 +1,11 @@
 // The one place that talks HTTP to the Express API. Everything else calls
 // `api.get/post/patch/delete` and gets back parsed JSON or a thrown ApiError â€”
 // mirroring the shape `lib/api.ts`'s `handler()` used to guarantee server-side.
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+//
+// In production the API is served from the same domain as the app (Vercel
+// routes /api/* to it), so the default there is "" — a same-origin request.
+export const API_URL =
+  import.meta.env.VITE_API_URL ?? (import.meta.env.DEV ? "http://localhost:4000" : "");
 
 export class ApiError extends Error {
   constructor(status, code, message, details) {

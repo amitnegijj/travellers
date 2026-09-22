@@ -19,6 +19,16 @@ export const env = Object.freeze({
   databaseSsl: process.env.DATABASE_SSL,
 
   authSecret: process.env.AUTH_SECRET,
+
+  // Set by Vercel on every deployment. Serverless instances are many and
+  // short-lived, so each one keeps a small connection pool and no local disk.
+  isServerless: Boolean(process.env.VERCEL),
+
+  // Supabase Storage for uploaded photos. Unset means photos go to local
+  // disk (backend/public/uploads), which is what `npm run dev` wants.
+  supabaseUrl: process.env.SUPABASE_URL,
+  supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  storageBucket: process.env.SUPABASE_STORAGE_BUCKET ?? "media",
 });
 
 export { DEV_AUTH_SECRET };
