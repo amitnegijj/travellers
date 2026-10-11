@@ -15,6 +15,7 @@ version is kept at `apps/web` for reference; see [Architecture](#architecture).
 ---
 
 ## Run it locally
+for the travleers app
 
 Requires **Node 18+** and **Docker Desktop running**.
 
@@ -217,3 +218,4 @@ ported 1:1).
 
 Trips, AI planner, Remix, Passport, communities, notifications, messaging,
 travel updates, moderation queue, 3D globe, mobile app.
+
